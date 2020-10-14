@@ -1,19 +1,15 @@
 package route
 
 import (
-	"goyave-blog-example/http/controller/hello"
+	"github.com/System-Glitch/goyave-blog-example/database/model"
+	"github.com/System-Glitch/goyave-blog-example/http/controller/hello"
+	"github.com/System-Glitch/goyave-blog-example/http/controller/user"
 
 	"github.com/System-Glitch/goyave/v3"
+	"github.com/System-Glitch/goyave/v3/auth"
 	"github.com/System-Glitch/goyave/v3/cors"
+	"github.com/System-Glitch/goyave/v3/middleware"
 )
-
-// Routing is an essential part of any Goyave application.
-// Routes definition is the action of associating a URI, sometimes having
-// parameters, with a handler which will process the request and respond to it.
-
-// Routes are defined in routes registrer functions.
-// The main route registrer is passed to "goyave.Start()" and is executed
-// automatically with a newly created root-level router.
 
 // Register all the application routes. This is the main route registrer.
 func Register(router *goyave.Router) {
@@ -21,6 +17,7 @@ func Register(router *goyave.Router) {
 	// Applying default CORS settings (allow all methods and all origins)
 	// Learn more about CORS options here: https://system-glitch.github.io/goyave/guide/advanced/cors.html
 	router.CORS(cors.Default())
+	router.Middleware(middleware.DisallowNonValidatedFields)
 
 	// Register your routes here
 
@@ -29,4 +26,19 @@ func Register(router *goyave.Router) {
 
 	// Route with validation
 	router.Post("/echo", hello.Echo).Validate(hello.EchoRequest)
+
+	registerUserRoutes(router)
+}
+
+func registerUserRoutes(parent *goyave.Router) {
+	userRouter := parent.Subrouter("/user")
+	userRouter.Post("/login", auth.NewJWTController(&model.User{}).Login).Validate(user.LoginRequest)
+	userRouter.Post("/", user.Register).Validate(user.InsertRequest)
+
+	authenticator := auth.Middleware(&model.User{}, &auth.JWTAuthenticator{})
+	authRouter := userRouter.Subrouter("")
+	authRouter.Middleware(authenticator)
+	authRouter.Get("/", user.Show)
+	authRouter.Patch("/", user.Update).Validate(user.UpdateRequest)
+
 }

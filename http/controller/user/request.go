@@ -1,0 +1,27 @@
+package user
+
+import "github.com/System-Glitch/goyave/v3/validation"
+
+var (
+	// InsertRequest validates Post requests for users
+	InsertRequest validation.RuleSet = validation.RuleSet{
+		"email":    {"required", "string", "email", "between:3,100"}, // TODO implement unique validation
+		"username": {"required", "string", "between:3,100"},
+		"image":    {"nullable", "url"},                     // TODO change to file
+		"password": {"required", "string", "between:6,100"}, // TODO implement password validation
+	}
+
+	// UpdateRequest validates Put requests for users
+	UpdateRequest validation.RuleSet = validation.RuleSet{
+		"email":    {"nullable", "string", "email", "between:3,100"},
+		"username": {"nullable", "string", "between:3,100"},
+		"image":    {"nullable", "url"},
+		"password": {"nullable", "string", "between:6,100"},
+	}
+
+	// LoginRequest validates user login requests
+	LoginRequest validation.RuleSet = validation.RuleSet{
+		"username": {"required", "string", "email"},
+		"password": {"required", "string"},
+	}
+)
