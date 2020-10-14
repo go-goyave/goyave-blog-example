@@ -1,6 +1,13 @@
-# Goyave Template
+<p align="center">
+    <img src="https://raw.githubusercontent.com/System-Glitch/goyave/master/resources/img/logo/goyave_text.png" alt="Goyave Logo" width="550"/>
+</p>
 
-A template project to get started with the [Goyave](https://github.com/System-Glitch/goyave) framework.
+## Goyave Blog Example
+### 🚧 WORK IN PROGRESS
+
+![https://github.com/System-Glitch/goyave-blog-example/actions](https://github.com/System-Glitch/goyave-blog-example/workflows/Test/badge.svg)
+
+This codebase was created to demonstrate a fully fledged fullstack application built with **[Goyave](https://github.com/System-Glitch/goyave)** including CRUD operations, authentication, routing, pagination, and more.
 
 ## Getting Started
 
@@ -8,6 +15,44 @@ A template project to get started with the [Goyave](https://github.com/System-Gl
 
 - Go 1.13+
 - Go modules
+
+### Directory structure
+
+```
+.
+├── database
+│   ├── model                // ORM models
+│   |   └── ...
+│   └── seeder               // Generators for database testing
+│       └── ...
+├── http
+│   ├── controller           // Business logic of the application
+│   │   └── ...
+│   ├── middleware           // Logic executed before or after controllers
+│   │   └── ...
+│   ├── validation
+│   │   ├── placeholder.go   // Placeholders for validation messages of custom rules 
+│   │   └── validation.go    // Custom validation rules
+│   └── route
+│       └── route.go         // Routes definition
+│
+├── resources
+│   └── lang
+│       └── en-US            // Overrides to the default language lines
+│           ├── fields.json
+│           ├── locale.json
+│           └── rules.json
+│
+├── test                     // Functional tests
+|   └── ...
+|
+├── .gitignore
+├── .golangci.yml            // Settings for the Golangci-lint linter
+├── config.json
+├── config.test.json         // Config file used for tests
+├── go.mod
+└── kernel.go                // Application entrypoint
+```
 
 ### Running the project
 
@@ -25,6 +70,18 @@ $ curl -H "Content-Type: application/json" -X POST -d '{"text":"abc 123"}' http:
 abc 123
 ```
 
+**Using docker:**
+
+```
+docker-compose up
+```
+
+**Run tests with docker:**
+
+```
+docker-compose -f docker-compose.test.yml up --abort-on-container-exit
+```
+
 ## Learning Goyave
 
 The Goyave framework has an extensive documentation covering in-depth subjects and teaching you how to run a project using Goyave from setup to deployment.
@@ -33,18 +90,8 @@ The Goyave framework has an extensive documentation covering in-depth subjects a
 
 <a href="https://pkg.go.dev/github.com/System-Glitch/goyave/v3"><h3 align="center">pkg.go.dev</h3></a>
 
-## Contributing
-
-Thank you for considering contributing to the Goyave framework! You can find the contribution guide in the [documentation](https://system-glitch.github.io/goyave/guide/contribution-guide.html).
-
-I have many ideas for the future of Goyave. I would be infinitely grateful to whoever want to support me and let me continue working on Goyave and making it better and better.
-
-You can support also me on Patreon:
-
-<a href="https://www.patreon.com/bePatron?u=25997573">
-	<img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="160">
-</a>
-
 ## License
+
+This example project is MIT Licensed. Copyright © 2020 Jérémy LAMBERT (SystemGlitch) 
 
 The Goyave framework is MIT Licensed. Copyright © 2019 Jérémy LAMBERT (SystemGlitch)
