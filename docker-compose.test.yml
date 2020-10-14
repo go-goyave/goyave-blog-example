@@ -1,0 +1,40 @@
+# This is the test docker-compose
+# Run with: docker-compose -f docker-compose.test.yml up --abort-on-container-exit
+
+version: "3"
+services:
+  testapi:
+    build: .
+    networks:
+      - goyave-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - testmariadb
+    volumes:
+      - .:/app
+    command: dockerize -wait tcp://testmariadb:3306 -timeout 100s sh -c 'go test -v -race -coverprofile=c.out -coverpkg=./... ./... ; go tool cover -func=c.out | grep total ; rm c.out'
+  testmariadb:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: goyave
+      MYSQL_USER: goyave
+      MYSQL_PASSWORD: secret
+    networks:
+      - goyave-backend
+    restart: on-failure
+    ports:
+      - "3306:3306"
+    volumes:
+      - databaseVolume:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 100
+volumes:
+  databaseVolume: {}
+networks:
+  goyave-backend:
+    driver: bridge

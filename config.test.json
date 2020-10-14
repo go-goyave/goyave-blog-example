@@ -2,8 +2,9 @@
     "app": {
         "name": "goyave-blog-example",
         "environment": "test",
-        "debug": false,
-        "defaultLanguage": "en-US"
+        "debug": true,
+        "defaultLanguage": "en-US",
+        "bcryptCost": 10
     },
     "server": {
         "host": "127.0.0.1",
@@ -11,25 +12,27 @@
         "protocol": "http",
         "domain": "",
         "port": 8080,
-        "httpsPort": 8081,
+        "httpsPort": 443,
         "timeout": 10,
-        "maxUploadSize": 10,
-        "tls": {
-            "cert": "",
-            "key": ""
-        }
+        "maxUploadSize": 10
     },
     "database": {
-        "connection": "none",
-        "host": "127.0.0.1",
+        "connection": "mysql",
+        "host": "testmariadb",
         "port": 3306,
         "name": "goyave",
-        "username": "root",
-        "password": "root",
+        "username": "goyave",
+        "password": "secret",
         "options": "charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true&loc=Local",
         "maxOpenConnections": 20,
         "maxIdleConnections": 20,
         "maxLifetime": 300,
-        "autoMigrate": false
+        "autoMigrate": true
+    },
+    "auth": {
+        "jwt": {
+            "expiry": 3600,
+            "secret": "1C4C304DACBEC13CC975A3708CFAF6AED0A478573C1C0D7EBFF0E7E8530C06B7"
+        }
     }
 }

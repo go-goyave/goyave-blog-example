@@ -1,0 +1,35 @@
+version: "3"
+services:
+  api:
+    build: .
+    restart: always
+    networks:
+      - goyave-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
+    volumes:
+      - .:/app
+  mariadb:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: goyave
+      MYSQL_USER: goyave
+      MYSQL_PASSWORD: secret
+    networks:
+      - goyave-backend
+    restart: on-failure
+    volumes:
+      - databaseVolume:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 100
+volumes:
+  databaseVolume: {}
+networks:
+  goyave-backend:
+    driver: bridge
