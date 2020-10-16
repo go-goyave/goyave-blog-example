@@ -11,6 +11,7 @@ services:
       - mariadb
     volumes:
       - .:/app
+      - storageVolume:/root/storage
   mariadb:
     image: mariadb
     environment:
@@ -30,6 +31,7 @@ services:
       retries: 100
 volumes:
   databaseVolume: {}
+  storageVolume: {}
 networks:
   goyave-backend:
     driver: bridge
