@@ -27,14 +27,14 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - databaseVolume:/var/lib/mysql
+      - testDatabaseVolume:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin ping"]
       interval: 10s
       timeout: 10s
       retries: 100
 volumes:
-  databaseVolume: {}
+  testDatabaseVolume: {}
 networks:
   goyave-backend:
     driver: bridge

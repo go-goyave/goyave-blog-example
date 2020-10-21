@@ -54,16 +54,21 @@ func (u *User) BeforeUpdate(tx *gorm.DB) error {
 
 func (u *User) brcyptPassword(tx *gorm.DB) error {
 	var newPass string
-	if v, ok := tx.Statement.Dest.(map[string]interface{}); ok {
-		newPass = v["password"].(string)
-	} else {
-		newPass = tx.Statement.Dest.(*User).Password
+	switch u := tx.Statement.Dest.(type) {
+	case map[string]interface{}:
+		newPass = u["password"].(string)
+	case *User:
+		newPass = u.Password
+	case []*User:
+		newPass = u[tx.Statement.CurDestIndex].Password
 	}
+
 	b, err := bcrypt.GenerateFromPassword([]byte(newPass), config.GetInt("app.bcryptCost"))
 	if err != nil {
 		return err
 	}
 	tx.Statement.SetColumn("password", b)
+
 	return nil
 }
 
@@ -73,6 +78,9 @@ func (u *User) brcyptPassword(tx *gorm.DB) error {
 func UserGenerator() interface{} {
 	user := &User{}
 	user.Username = faker.Name()
+
+	b, _ := bcrypt.GenerateFromPassword([]byte(faker.Password()), config.GetInt("app.bcryptCost"))
+	user.Password = string(b)
 
 	faker.SetGenerateUniqueValues(true)
 	user.Email = faker.Email()

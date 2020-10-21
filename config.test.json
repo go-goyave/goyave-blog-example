@@ -2,7 +2,7 @@
     "app": {
         "name": "goyave-blog-example",
         "environment": "test",
-        "debug": true,
+        "debug": false,
         "defaultLanguage": "en-US",
         "bcryptCost": 10
     },
