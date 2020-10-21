@@ -21,7 +21,7 @@ var (
 
 	// LoginRequest validates user login requests
 	LoginRequest validation.RuleSet = validation.RuleSet{
-		"username": {"required", "string", "email"},
+		"email":    {"required", "string", "email"},
 		"password": {"required", "string"},
 	}
 )

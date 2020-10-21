@@ -31,8 +31,11 @@ func Register(router *goyave.Router) {
 }
 
 func registerUserRoutes(parent *goyave.Router) {
+	jwtController := auth.NewJWTController(&model.User{})
+	jwtController.UsernameField = "email"
+
 	userRouter := parent.Subrouter("/user")
-	userRouter.Post("/login", auth.NewJWTController(&model.User{}).Login).Validate(user.LoginRequest)
+	userRouter.Post("/login", jwtController.Login).Validate(user.LoginRequest)
 	userRouter.Post("/", user.Register).Validate(user.InsertRequest)
 	userRouter.Get("/{id:[0-9+]}/image", user.Image)
 
