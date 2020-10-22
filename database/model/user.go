@@ -38,7 +38,7 @@ type User struct {
 // Ensures the password is encrypted using bcrypt, with the cost defined by the
 // config entry "app.bcryptCost".
 func (u *User) BeforeCreate(tx *gorm.DB) error {
-	return u.brcyptPassword(tx)
+	return u.bcryptPassword(tx)
 }
 
 // BeforeUpdate hook executed before a User record is updated in the database.
@@ -46,13 +46,13 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 // config entry "app.bcryptCost".
 func (u *User) BeforeUpdate(tx *gorm.DB) error {
 	if tx.Statement.Changed("Password") {
-		return u.brcyptPassword(tx)
+		return u.bcryptPassword(tx)
 	}
 
 	return nil
 }
 
-func (u *User) brcyptPassword(tx *gorm.DB) error {
+func (u *User) bcryptPassword(tx *gorm.DB) error {
 	var newPass string
 	switch u := tx.Statement.Dest.(type) {
 	case map[string]interface{}:
