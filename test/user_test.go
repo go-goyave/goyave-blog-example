@@ -126,7 +126,8 @@ func (suite *UserTestSuite) TestRegisterWithImage() {
 		suite.WriteField(writer, "password", "super_secret_password")
 		suite.WriteFile(writer, path, "image", filepath.Base(path))
 		if err := writer.Close(); err != nil {
-			suite.FailNow("Failed to write multipart form", err)
+			suite.Error(err)
+			return
 		}
 		headers := map[string]string{"Content-Type": writer.FormDataContentType()}
 
@@ -148,7 +149,7 @@ func (suite *UserTestSuite) TestRegisterWithImage() {
 				suite.Error(err)
 			}
 
-			actualPath := user.StoragePath + "/" + u.Image.String
+			actualPath := user.StoragePath + u.Image.String
 			if suite.FileExists(actualPath) {
 				filesystem.Delete(actualPath)
 			}
@@ -166,7 +167,8 @@ func (suite *UserTestSuite) TestBcryptPassword() {
 
 	db := database.Conn()
 	if err := db.Create(generatedUsers).Error; err != nil {
-		suite.FailNow("Couldn't save generated users into database", err)
+		suite.Error(err)
+		return
 	}
 
 	users := make([]*model.User, 0, len(generatedUsers))
@@ -190,7 +192,8 @@ func (suite *UserTestSuite) TestShow() {
 		generatedUser := factory.Override(override).Save(1).([]*model.User)[0]
 		token, err := auth.GenerateToken("jack@example.org")
 		if err != nil {
-			suite.FailNow("Failed to generate JWT", err)
+			suite.Error(err)
+			return
 		}
 
 		headers := map[string]string{
@@ -228,16 +231,18 @@ func (suite *UserTestSuite) TestImage() {
 		u := factory.Override(override).Save(1).([]*model.User)[0]
 
 		// Create temp profile picture
-		destPath := user.StoragePath + "/test_profile_picture.png"
+		destPath := user.StoragePath + "test_profile_picture.png"
 		refPath := "resources/test/img/goyave_64.png"
 		input, err := ioutil.ReadFile(refPath)
 		if err != nil {
-			suite.FailNow("Couldn't read ref profile picture", err)
+			suite.Error(err)
+			return
 		}
 
 		err = ioutil.WriteFile(destPath, input, 0660)
 		if err != nil {
-			suite.FailNow("Couldn't write profile picture", err)
+			suite.Error(err)
+			return
 		}
 		defer filesystem.Delete(destPath)
 
@@ -252,11 +257,13 @@ func (suite *UserTestSuite) TestImage() {
 
 			file, err := os.Open(refPath)
 			if err != nil {
-				suite.FailNow("Couldn't load reference image", err)
+				suite.Error(err)
+				return
 			}
 			ref, err := ioutil.ReadAll(file)
 			if err != nil {
-				suite.FailNow("Couldn't load reference image", err)
+				suite.Error(err)
+				return
 			}
 
 			suite.Equal(ref, body)
@@ -280,11 +287,12 @@ func (suite *UserTestSuite) TestImageDefault() {
 
 			file, err := os.Open("resources/img/default_profile_picture.png")
 			if err != nil {
-				suite.FailNow("Couldn't load reference image", err)
+				suite.Error(err)
+				return
 			}
 			ref, err := ioutil.ReadAll(file)
 			if err != nil {
-				suite.FailNow("Couldn't load reference image", err)
+				suite.Error(err)
 			}
 
 			suite.Equal(ref, body)
@@ -293,7 +301,37 @@ func (suite *UserTestSuite) TestImageDefault() {
 }
 
 func (suite *UserTestSuite) TestUpdate() {
-	// TODO implement TestUpdate
+	suite.RunServer(route.Register, func() {
+		factory := database.NewFactory(model.UserGenerator)
+		user := factory.Save(1).([]*model.User)[0]
+		token, err := auth.GenerateToken(user.Email)
+		if err != nil {
+			suite.Error(err)
+			return
+		}
+
+		headers := map[string]string{
+			"Content-Type":  "application/json",
+			"Authorization": "Bearer " + token,
+		}
+		request := map[string]interface{}{
+			"username": user.Username + "_edited",
+		}
+		body, _ := json.Marshal(request)
+		resp, err := suite.Patch("/user", headers, bytes.NewReader(body))
+		suite.Nil(err)
+		suite.NotNil(resp)
+		if resp != nil {
+			defer resp.Body.Close()
+			suite.Equal(http.StatusNoContent, resp.StatusCode)
+
+			updatedUser := &model.User{}
+			if err := database.Conn().Model(&model.User{}).Where("email = ?", user.Email).First(updatedUser).Error; err != nil {
+				suite.Error(err)
+			}
+			suite.Equal(request["username"], updatedUser.Username)
+		}
+	})
 }
 
 func (suite *UserTestSuite) TestUpdateImage() {
