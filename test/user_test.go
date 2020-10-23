@@ -354,9 +354,28 @@ func (suite *UserTestSuite) TestUpdate() {
 
 func (suite *UserTestSuite) TestUpdateImage() {
 	suite.RunServer(route.Register, func() {
+		const path = "resources/test/img/goyave_64.png"
+
 		factory := database.NewFactory(model.UserGenerator)
 		user := factory.Save(1).([]*model.User)[0]
-		const path = "resources/test/img/goyave_64.png"
+
+		// Set image for user (to check deletion on update)
+		destPath := userController.StoragePath + "test_profile_picture.png"
+		input, err := ioutil.ReadFile(path)
+		if err != nil {
+			suite.Error(err)
+			return
+		}
+
+		err = ioutil.WriteFile(destPath, input, 0660)
+		if err != nil {
+			suite.Error(err)
+			return
+		}
+		user.Image.String = "test_profile_picture.png"
+		user.Image.Valid = true
+		database.Conn().Save(user)
+
 		body := &bytes.Buffer{}
 		writer := multipart.NewWriter(body)
 		suite.WriteFile(writer, path, "image", filepath.Base(path))
@@ -387,6 +406,9 @@ func (suite *UserTestSuite) TestUpdateImage() {
 			if err := database.Conn().Where("email = ?", user.Email).First(u).Error; err != nil {
 				suite.Error(err)
 			}
+
+			// Previous image has been deleted
+			suite.NoFileExists(userController.StoragePath + user.Image.String)
 
 			actualPath := userController.StoragePath + u.Image.String
 			if suite.FileExists(actualPath) {
