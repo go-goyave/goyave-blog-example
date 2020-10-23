@@ -12,7 +12,7 @@ import (
 	"testing"
 
 	"github.com/System-Glitch/goyave-blog-example/database/model"
-	"github.com/System-Glitch/goyave-blog-example/http/controller/user"
+	userController "github.com/System-Glitch/goyave-blog-example/http/controller/user"
 	"github.com/System-Glitch/goyave-blog-example/http/route"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/guregu/null.v4"
@@ -26,6 +26,20 @@ import (
 
 type UserTestSuite struct {
 	goyave.TestSuite
+}
+
+func (suite *UserTestSuite) readFile(path string) ([]byte, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	contents, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil, err
+	}
+
+	return contents, nil
 }
 
 func (suite *UserTestSuite) SetupTest() {
@@ -149,8 +163,21 @@ func (suite *UserTestSuite) TestRegisterWithImage() {
 				suite.Error(err)
 			}
 
-			actualPath := user.StoragePath + u.Image.String
+			actualPath := userController.StoragePath + u.Image.String
 			if suite.FileExists(actualPath) {
+				ref, err := suite.readFile(path)
+				if err != nil {
+					suite.Error(err)
+					return
+				}
+
+				actual, err := suite.readFile(actualPath)
+				if err != nil {
+					suite.Error(err)
+					return
+				}
+
+				suite.Equal(ref, actual)
 				filesystem.Delete(actualPath)
 			}
 		}
@@ -231,7 +258,7 @@ func (suite *UserTestSuite) TestImage() {
 		u := factory.Override(override).Save(1).([]*model.User)[0]
 
 		// Create temp profile picture
-		destPath := user.StoragePath + "test_profile_picture.png"
+		destPath := userController.StoragePath + "test_profile_picture.png"
 		refPath := "resources/test/img/goyave_64.png"
 		input, err := ioutil.ReadFile(refPath)
 		if err != nil {
@@ -255,12 +282,7 @@ func (suite *UserTestSuite) TestImage() {
 			suite.Equal("image/png", resp.Header.Get("Content-Type"))
 			body := suite.GetBody(resp)
 
-			file, err := os.Open(refPath)
-			if err != nil {
-				suite.Error(err)
-				return
-			}
-			ref, err := ioutil.ReadAll(file)
+			ref, err := suite.readFile(refPath)
 			if err != nil {
 				suite.Error(err)
 				return
@@ -285,14 +307,10 @@ func (suite *UserTestSuite) TestImageDefault() {
 			suite.Equal("image/png", resp.Header.Get("Content-Type"))
 			body := suite.GetBody(resp)
 
-			file, err := os.Open("resources/img/default_profile_picture.png")
+			ref, err := suite.readFile("resources/img/default_profile_picture.png")
 			if err != nil {
 				suite.Error(err)
 				return
-			}
-			ref, err := ioutil.ReadAll(file)
-			if err != nil {
-				suite.Error(err)
 			}
 
 			suite.Equal(ref, body)
@@ -335,7 +353,61 @@ func (suite *UserTestSuite) TestUpdate() {
 }
 
 func (suite *UserTestSuite) TestUpdateImage() {
-	// TODO implement TestUpdateWithImage
+	suite.RunServer(route.Register, func() {
+		factory := database.NewFactory(model.UserGenerator)
+		user := factory.Save(1).([]*model.User)[0]
+		const path = "resources/test/img/goyave_64.png"
+		body := &bytes.Buffer{}
+		writer := multipart.NewWriter(body)
+		suite.WriteFile(writer, path, "image", filepath.Base(path))
+		if err := writer.Close(); err != nil {
+			suite.Error(err)
+			return
+		}
+
+		token, err := auth.GenerateToken(user.Email)
+		if err != nil {
+			suite.Error(err)
+			return
+		}
+
+		headers := map[string]string{
+			"Content-Type":  writer.FormDataContentType(),
+			"Authorization": "Bearer " + token,
+		}
+
+		resp, err := suite.Patch("/user", headers, body)
+		suite.Nil(err)
+		suite.NotNil(resp)
+		if resp != nil {
+			defer resp.Body.Close()
+			suite.Equal(http.StatusNoContent, resp.StatusCode)
+
+			u := &model.User{}
+			if err := database.Conn().Where("email = ?", user.Email).First(u).Error; err != nil {
+				suite.Error(err)
+			}
+
+			actualPath := userController.StoragePath + u.Image.String
+			if suite.FileExists(actualPath) {
+
+				ref, err := suite.readFile(path)
+				if err != nil {
+					suite.Error(err)
+					return
+				}
+
+				actual, err := suite.readFile(actualPath)
+				if err != nil {
+					suite.Error(err)
+					return
+				}
+				suite.Equal(ref, actual)
+
+				filesystem.Delete(actualPath)
+			}
+		}
+	})
 }
 
 func TestUserSuite(t *testing.T) {
