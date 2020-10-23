@@ -2,7 +2,6 @@ package route
 
 import (
 	"github.com/System-Glitch/goyave-blog-example/database/model"
-	"github.com/System-Glitch/goyave-blog-example/http/controller/hello"
 	"github.com/System-Glitch/goyave-blog-example/http/controller/user"
 
 	"github.com/System-Glitch/goyave/v3"
@@ -14,18 +13,8 @@ import (
 // Register all the application routes. This is the main route registrer.
 func Register(router *goyave.Router) {
 
-	// Applying default CORS settings (allow all methods and all origins)
-	// Learn more about CORS options here: https://system-glitch.github.io/goyave/guide/advanced/cors.html
 	router.CORS(cors.Default())
 	router.Middleware(middleware.DisallowNonValidatedFields)
-
-	// Register your routes here
-
-	// Route without validation
-	router.Get("/hello", hello.SayHi)
-
-	// Route with validation
-	router.Post("/echo", hello.Echo).Validate(hello.EchoRequest)
 
 	registerUserRoutes(router)
 }
