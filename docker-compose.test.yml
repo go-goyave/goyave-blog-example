@@ -6,7 +6,7 @@ services:
   testapi:
     build: .
     networks:
-      - goyave-backend
+      - goyave-test-backend
     ports:
       - "8080:8080"
     depends_on:
@@ -22,7 +22,7 @@ services:
       MYSQL_USER: goyave
       MYSQL_PASSWORD: secret
     networks:
-      - goyave-backend
+      - goyave-test-backend
     restart: on-failure
     ports:
       - "3306:3306"
@@ -36,5 +36,5 @@ services:
 volumes:
   testDatabaseVolume: {}
 networks:
-  goyave-backend:
+  goyave-test-backend:
     driver: bridge

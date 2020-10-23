@@ -13,10 +13,10 @@ var (
 
 	// UpdateRequest validates Put requests for users
 	UpdateRequest validation.RuleSet = validation.RuleSet{
-		"email":    {"nullable", "string", "email", "between:3,100", "unique:users"},
-		"username": {"nullable", "string", "between:3,100", "unique:users"},
+		"email":    {"string", "email", "between:3,100", "unique:users"},
+		"username": {"string", "between:3,100", "unique:users"},
 		"image":    {"nullable", "file", "image", "max:2048", "count:1"},
-		"password": {"nullable", "string", "between:6,100"},
+		"password": {"string", "between:6,100"},
 	}
 
 	// LoginRequest validates user login requests

@@ -31,7 +31,7 @@ type User struct {
 	Username  string      `gorm:"type:char(100);unique;unique_index;not null"`
 	Email     string      `gorm:"type:char(100);unique;unique_index;not null" auth:"username"`
 	Image     null.String `gorm:"type:char(100);default:null"` // TODO file storage
-	Password  string      `gorm:"type:char(60);not null" auth:"password" model:"hide" json:",omitempty"`
+	Password  string      `gorm:"type:char(60);not null" auth:"password" json:"-"`
 }
 
 // BeforeCreate hook executed before a User record is inserted in the database.
