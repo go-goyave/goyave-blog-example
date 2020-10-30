@@ -44,14 +44,18 @@ func registerArticleRoutes(parent *goyave.Router, authenticator goyave.Middlewar
 
 	articleRouter := parent.Subrouter("/article")
 	articleRouter.Get("/", article.Index)
-	articleRouter.Get("/{id:[0-9]+}", article.Show) // TODO use slug
+	articleRouter.Get("/{slug}", article.Show)
 
 	authRouter := articleRouter.Subrouter("")
 	authRouter.Middleware(authenticator)
 	authRouter.Post("/", article.Store).Validate(article.InsertRequest)
 
+	ownedRouter := authRouter.Subrouter("")
 	ownerMiddleware := middleware.Owner("id", "author_id", &model.Article{})
-	authRouter.Patch("/{id:[0-9]+}", article.Update).Middleware(ownerMiddleware).Validate(article.UpdateRequest)
-	authRouter.Delete("/{id:[0-9]+}", article.Destroy).Middleware(ownerMiddleware)
+	ownedRouter.Middleware(ownerMiddleware)
+	ownedRouter.Patch("/{id:[0-9]+}", article.Update).Validate(article.UpdateRequest)
+	ownedRouter.Patch("/{slug}", article.Update).Validate(article.UpdateRequest)
+	ownedRouter.Delete("/{id:[0-9]+}", article.Destroy)
+	ownedRouter.Delete("/{slug}", article.Destroy)
 
 }

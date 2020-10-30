@@ -20,7 +20,7 @@ func Index(response *goyave.Response, request *goyave.Request) { // TODO paginat
 // Show a single article.
 func Show(response *goyave.Response, request *goyave.Request) {
 	article := model.Article{}
-	result := database.Conn().First(&article, request.Params["id"])
+	result := database.Conn().Where("slug = ?", request.Params["slug"]).First(&article)
 	if response.HandleDatabaseError(result) {
 		response.JSON(http.StatusOK, article)
 	}
@@ -47,7 +47,12 @@ func Store(response *goyave.Response, request *goyave.Request) {
 func Update(response *goyave.Response, request *goyave.Request) {
 	article := model.Article{}
 	db := database.Conn()
-	result := db.Select("id").First(&article, request.Params["id"])
+	result := db.Select("id")
+	if slug, ok := request.Params["slug"]; ok {
+		result = result.Where("slug = ?", slug).First(&article)
+	} else {
+		result = result.First(&article, request.Params["id"])
+	}
 	if response.HandleDatabaseError(result) {
 		if err := db.Model(&article).Updates(request.Data).Error; err != nil {
 			response.Error(err)
@@ -59,7 +64,13 @@ func Update(response *goyave.Response, request *goyave.Request) {
 func Destroy(response *goyave.Response, request *goyave.Request) {
 	article := model.Article{}
 	db := database.Conn()
-	result := db.Select("id").First(&article, request.Params["id"])
+	result := db.Select("id")
+	if slug, ok := request.Params["slug"]; ok {
+		result = result.Where("slug = ?", slug).First(&article)
+	} else {
+		result = result.First(&article, request.Params["id"])
+	}
+	// TODO allow search by id too for patch and delete
 	if response.HandleDatabaseError(result) {
 		if err := db.Delete(&article).Error; err != nil {
 			response.Error(err)
