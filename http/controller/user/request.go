@@ -11,7 +11,7 @@ var (
 		"password": {"required", "string", "between:6,100"}, // TODO implement password validation
 	}
 
-	// UpdateRequest validates Put requests for users
+	// UpdateRequest validates Patch requests for users
 	UpdateRequest validation.RuleSet = validation.RuleSet{
 		"email":    {"string", "email", "between:3,100", "unique:users"},
 		"username": {"string", "between:3,100", "unique:users"},
