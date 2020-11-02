@@ -3,6 +3,11 @@ package dbutil
 import (
 	"strings"
 
+	"github.com/System-Glitch/goyave-blog-example/database/model"
+	"github.com/System-Glitch/goyave-blog-example/database/seeder"
+	"github.com/System-Glitch/goyave/v3"
+	"github.com/System-Glitch/goyave/v3/config"
+	"github.com/System-Glitch/goyave/v3/database"
 	"gorm.io/gorm"
 )
 
@@ -27,4 +32,21 @@ func EscapeLike(str string) string {
 		str = strings.ReplaceAll(str, v, "\\"+v)
 	}
 	return str
+}
+
+// RunSeeders run seeders if the user table is empty.
+// Only triggers if the environment is "localhost".
+func RunSeeders() {
+	if config.GetString("app.environment") == "localhost" {
+		count := int64(0)
+		if err := database.Conn().Model(&model.User{}).Count(&count).Error; err != nil {
+			panic(err)
+		}
+
+		if count <= 0 {
+			goyave.Logger.Println("Running seeders...")
+			seeder.User()
+			seeder.Article()
+		}
+	}
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/System-Glitch/goyave-blog-example/http/route"
 
+	"github.com/System-Glitch/goyave-blog-example/database/dbutil"
 	_ "github.com/System-Glitch/goyave-blog-example/http/validation"
 
 	"github.com/System-Glitch/goyave/v3"
@@ -12,7 +13,7 @@ import (
 )
 
 func main() {
-	// TODO run seeders if database is empty and environment is not production
+	goyave.RegisterStartupHook(dbutil.RunSeeders)
 
 	if err := goyave.Start(route.Register); err != nil {
 		os.Exit(err.(*goyave.Error).ExitCode)
