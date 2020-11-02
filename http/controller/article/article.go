@@ -3,15 +3,39 @@ package article
 import (
 	"net/http"
 
+	"github.com/System-Glitch/goyave-blog-example/database/dbutil"
 	"github.com/System-Glitch/goyave-blog-example/database/model"
 	"github.com/System-Glitch/goyave/v3"
 	"github.com/System-Glitch/goyave/v3/database"
 )
 
-// Index list all articles.
-func Index(response *goyave.Response, request *goyave.Request) { // TODO paginate
+const (
+	// DefaultPageSize the number of records per page when paginating
+	DefaultPageSize = 10
+)
+
+// Index paginates all articles.
+// Accepts the "page" and "pageSize" query parameters.
+// If "search" query parameter is set, performs naive search by title.
+func Index(response *goyave.Response, request *goyave.Request) {
 	articles := []model.Article{}
-	result := database.Conn().Find(&articles)
+	page := 1
+	if request.Has("page") {
+		page = request.Integer("page")
+	}
+	pageSize := DefaultPageSize
+	if request.Has("pageSize") {
+		pageSize = request.Integer("pageSize")
+	}
+
+	// TODO better pagination (with total and such)
+	tx := database.Conn().Scopes(dbutil.Paginate(page, pageSize))
+
+	if request.Has("search") {
+		tx = tx.Where("title LIKE ?", "%"+request.String("search")+"%")
+	}
+
+	result := tx.Find(&articles)
 	if response.HandleDatabaseError(result) {
 		response.JSON(http.StatusOK, articles)
 	}
@@ -70,7 +94,6 @@ func Destroy(response *goyave.Response, request *goyave.Request) {
 	} else {
 		result = result.First(&article, request.Params["id"])
 	}
-	// TODO allow search by id too for patch and delete
 	if response.HandleDatabaseError(result) {
 		if err := db.Delete(&article).Error; err != nil {
 			response.Error(err)

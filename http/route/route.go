@@ -43,7 +43,7 @@ func registerUserRoutes(parent *goyave.Router, authenticator goyave.Middleware) 
 func registerArticleRoutes(parent *goyave.Router, authenticator goyave.Middleware) {
 
 	articleRouter := parent.Subrouter("/article")
-	articleRouter.Get("/", article.Index)
+	articleRouter.Get("/", article.Index).Validate(article.IndexRequest)
 	articleRouter.Get("/{slug}", article.Show)
 
 	authRouter := articleRouter.Subrouter("")

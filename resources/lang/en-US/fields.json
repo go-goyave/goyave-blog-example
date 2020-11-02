@@ -1,3 +1,5 @@
 {
-    
+    "pageSize": {
+        "name": "page size"
+    }
 }

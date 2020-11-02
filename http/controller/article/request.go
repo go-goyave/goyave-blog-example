@@ -14,4 +14,11 @@ var (
 		"title":    {"string", "max:200"},
 		"contents": {"string"},
 	}
+
+	// IndexRequest validates query parameters for paginating articles
+	IndexRequest validation.RuleSet = validation.RuleSet{
+		"page":     {"integer", "min:1"},
+		"pageSize": {"integer", "between:10,100"},
+		"search":   {"string", "max:200"},
+	}
 )

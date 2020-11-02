@@ -30,7 +30,7 @@ type User struct {
 	UpdatedAt time.Time
 	Username  string      `gorm:"type:char(100);unique;unique_index;not null"`
 	Email     string      `gorm:"type:char(100);unique;unique_index;not null" auth:"username"`
-	Image     null.String `gorm:"type:char(100);default:null" json:"-"` // TODO file storage
+	Image     null.String `gorm:"type:char(100);default:null" json:"-"`
 	Password  string      `gorm:"type:char(60);not null" auth:"password" json:"-"`
 }
 

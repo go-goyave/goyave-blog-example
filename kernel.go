@@ -12,7 +12,8 @@ import (
 )
 
 func main() {
-	// This is the entry point of your application.
+	// TODO run seeders if database is empty and environment is not production
+
 	if err := goyave.Start(route.Register); err != nil {
 		os.Exit(err.(*goyave.Error).ExitCode)
 	}
