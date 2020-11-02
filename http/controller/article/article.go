@@ -32,7 +32,8 @@ func Index(response *goyave.Response, request *goyave.Request) {
 	tx := database.Conn().Scopes(dbutil.Paginate(page, pageSize))
 
 	if request.Has("search") {
-		tx = tx.Where("title LIKE ?", "%"+request.String("search")+"%")
+		search := dbutil.EscapeLike(request.String("search"))
+		tx = tx.Where("title LIKE ?", "%"+search+"%")
 	}
 
 	result := tx.Find(&articles)
