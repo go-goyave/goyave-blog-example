@@ -82,6 +82,10 @@ docker-compose up
 docker-compose -f docker-compose.test.yml up --abort-on-container-exit
 ```
 
+**Database seeding:**
+
+If `app.environment` is set to `localhost` in the config and if the database is empty (no record in the users table), the seeders will be executed and a random dataset will be generated and inserted into the database.
+
 ## Learning Goyave
 
 The Goyave framework has an extensive documentation covering in-depth subjects and teaching you how to run a project using Goyave from setup to deployment.

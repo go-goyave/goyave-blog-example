@@ -15,7 +15,7 @@ var (
 	StoragePath string = ""
 )
 
-func init() { // TODO maybe move this to its own package because articles may use storage as well
+func init() {
 	home, err := homedir.Dir()
 	if err != nil {
 		goyave.ErrLogger.Fatal(err)
