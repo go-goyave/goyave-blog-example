@@ -8,7 +8,7 @@ var (
 		"email":    {"required", "string", "email", "between:3,100", "unique:users"},
 		"username": {"required", "string", "between:3,100", "unique:users"},
 		"image":    {"nullable", "file", "image", "max:2048", "count:1"},
-		"password": {"required", "string", "between:6,100"}, // TODO implement password validation
+		"password": {"required", "string", "between:6,100", "password"},
 	}
 
 	// UpdateRequest validates Patch requests for users
@@ -16,7 +16,7 @@ var (
 		"email":    {"string", "email", "between:3,100", "unique:users"},
 		"username": {"string", "between:3,100", "unique:users"},
 		"image":    {"nullable", "file", "image", "max:2048", "count:1"},
-		"password": {"string", "between:6,100"},
+		"password": {"string", "between:6,100", "password"},
 	}
 
 	// LoginRequest validates user login requests

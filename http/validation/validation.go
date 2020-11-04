@@ -1,24 +1,57 @@
 package validation
 
-// If none of the available validation rules satisfy your needs, you can implement custom validation rules.
-// https://system-glitch.github.io/goyave/guide/basics/validation.html#custom-rules
-
-// import "github.com/System-Glitch/goyave/v3/validation"
-
-// func validateCustomFormat(field string, value interface{}, parameters []string, form map[string]interface{}) bool {
-// 	str, ok := value.(string)
-
-// 	if ok { // The data under validation is a string
-// 		return regexp.MustCompile(parameters[0]).MatchString(str)
-// 	}
-
-// 	return false // Cannot validate this field
-// }
+import "github.com/System-Glitch/goyave/v3/validation"
 
 func init() {
-	// Register your custom validation rules here.
-	// validation.AddRule("custom_format", &validation.RuleDefinition{
-	// 	Function:           validateCustomFormat,
-	// 	RequiredParameters: 1, // Ensure the rule has at least one parameter
-	// })
+	validation.AddRule("password", &validation.RuleDefinition{
+		Function:           validatePassword,
+		RequiredParameters: 0,
+	})
+}
+
+func isLowerCaseLetter(r rune) bool {
+	return r >= 'a' && r <= 'z'
+}
+
+func isUpperCaseLetter(r rune) bool {
+	return r >= 'A' && r <= 'Z'
+}
+
+func isDigit(r rune) bool {
+	return r >= '0' && r <= '9'
+}
+
+func isSpecialChar(r rune) bool {
+	return !isLowerCaseLetter(r) && !isUpperCaseLetter(r) && !isDigit(r)
+}
+
+// validatePassword takes an input and checks if it fulfills password strength criteria:
+// - at least one uppercase and one lowercase letter
+// - at least one digit
+// - at least one special character (! @ # ? ] etc., any utf-8 character that is not a letter or a digit)
+func validatePassword(field string, value interface{}, parameters []string, form map[string]interface{}) bool {
+	str, ok := value.(string)
+
+	if ok {
+		lower := false
+		upper := false
+		digit := false
+		special := false
+
+		for _, r := range str {
+			switch {
+			case isLowerCaseLetter(r):
+				lower = true
+			case isUpperCaseLetter(r):
+				upper = true
+			case isDigit(r):
+				digit = true
+			case isSpecialChar(r):
+				special = true
+			}
+		}
+		return lower && upper && special && digit
+	}
+
+	return false // Cannot validate this field
 }
