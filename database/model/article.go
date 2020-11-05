@@ -96,5 +96,3 @@ func ArticleGenerator() interface{} {
 
 	return article
 }
-
-// TODO comment on article

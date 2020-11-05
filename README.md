@@ -31,7 +31,6 @@ This codebase was created to demonstrate a fully fledged fullstack application b
 │   ├── middleware           // Logic executed before or after controllers
 │   │   └── ...
 │   ├── validation
-│   │   ├── placeholder.go   // Placeholders for validation messages of custom rules 
 │   │   └── validation.go    // Custom validation rules
 │   └── route
 │       └── route.go         // Routes definition
