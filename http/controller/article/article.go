@@ -3,10 +3,10 @@ package article
 import (
 	"net/http"
 
-	"github.com/System-Glitch/goyave-blog-example/database/dbutil"
 	"github.com/System-Glitch/goyave-blog-example/database/model"
 	"github.com/System-Glitch/goyave/v3"
 	"github.com/System-Glitch/goyave/v3/database"
+	"github.com/System-Glitch/goyave/v3/helper"
 )
 
 const (
@@ -28,17 +28,17 @@ func Index(response *goyave.Response, request *goyave.Request) {
 		pageSize = request.Integer("pageSize")
 	}
 
-	// TODO better pagination (with total and such)
-	tx := database.Conn().Scopes(dbutil.Paginate(page, pageSize))
+	tx := database.Conn()
 
 	if request.Has("search") {
-		search := dbutil.EscapeLike(request.String("search"))
+		search := helper.EscapeLike(request.String("search"))
 		tx = tx.Where("title LIKE ?", "%"+search+"%")
 	}
 
-	result := tx.Find(&articles)
+	paginator := database.NewPaginator(tx, page, pageSize, &articles)
+	result := paginator.Find()
 	if response.HandleDatabaseError(result) {
-		response.JSON(http.StatusOK, articles)
+		response.JSON(http.StatusOK, paginator)
 	}
 }
 
