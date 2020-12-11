@@ -28,8 +28,8 @@ type User struct {
 	ID        uint `gorm:"primarykey"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Username  string      `gorm:"type:char(100);unique;unique_index;not null"`
-	Email     string      `gorm:"type:char(100);unique;unique_index;not null" auth:"username"`
+	Username  string      `gorm:"type:char(100);unique;uniqueIndex;not null"`
+	Email     string      `gorm:"type:char(100);unique;uniqueIndex;not null" auth:"username"`
 	Image     null.String `gorm:"type:char(100);default:null" json:"-"`
 	Password  string      `gorm:"type:char(60);not null" auth:"password" json:"-"`
 }
