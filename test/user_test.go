@@ -23,6 +23,7 @@ import (
 	"github.com/System-Glitch/goyave/v3/helper/filesystem"
 	"github.com/System-Glitch/goyave/v3/validation"
 
+	_ "github.com/System-Glitch/goyave-blog-example/http/validation"
 	_ "github.com/System-Glitch/goyave/v3/database/dialect/mysql"
 )
 
