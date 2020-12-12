@@ -13,6 +13,8 @@ services:
       - testmariadb
     volumes:
       - .:/app
+    environment:
+      DB_HOST: testmariadb
     command: dockerize -wait tcp://testmariadb:3306 -timeout 100s sh -c 'go test -v -race -coverprofile=c.out -coverpkg=./... ./... ; go tool cover -func=c.out | grep total ; rm c.out'
   testmariadb:
     image: mariadb

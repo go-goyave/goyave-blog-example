@@ -18,7 +18,7 @@
     },
     "database": {
         "connection": "mysql",
-        "host": "testmariadb",
+        "host": "${DB_HOST}",
         "port": 3306,
         "name": "goyave",
         "username": "goyave",

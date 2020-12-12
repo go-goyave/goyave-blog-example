@@ -21,6 +21,8 @@ jobs:
         with:
           go-version: ${{ matrix.go }}
       - name: Run tests
+        env:
+          DB_HOST: 127.0.0.1
         run: |
           echo "GOPATH=$(go env GOPATH)" >> $GITHUB_ENV
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
