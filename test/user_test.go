@@ -56,7 +56,7 @@ func (suite *UserTestSuite) TestRegister() {
 		request := map[string]interface{}{
 			"username": "jack",
 			"email":    "jack@example.org",
-			"password": "super_secret_password",
+			"password": "super_Secret_password_2",
 		}
 		body, _ := json.Marshal(request)
 		resp, err := suite.Post("/user", headers, bytes.NewReader(body))
@@ -114,7 +114,7 @@ func (suite *UserTestSuite) TestRegisterNotUnique() {
 		request := map[string]interface{}{
 			"username": override.Username,
 			"email":    override.Email,
-			"password": "super_secret_password",
+			"password": "super_Secret_password_2",
 		}
 		body, _ := json.Marshal(request)
 		resp, err := suite.Post("/user", headers, bytes.NewReader(body))
@@ -141,7 +141,7 @@ func (suite *UserTestSuite) TestRegisterWithImage() {
 		writer := multipart.NewWriter(body)
 		suite.WriteField(writer, "email", "jack@example.org")
 		suite.WriteField(writer, "username", "jack")
-		suite.WriteField(writer, "password", "super_secret_password")
+		suite.WriteField(writer, "password", "super_Secret_password_2")
 		suite.WriteFile(writer, path, "image", filepath.Base(path))
 		if err := writer.Close(); err != nil {
 			suite.Error(err)
