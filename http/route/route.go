@@ -10,12 +10,14 @@ import (
 	"github.com/System-Glitch/goyave/v3/auth"
 	"github.com/System-Glitch/goyave/v3/cors"
 	gmiddleware "github.com/System-Glitch/goyave/v3/middleware"
+	"github.com/System-Glitch/goyave/v3/middleware/ratelimiter"
 )
 
 // Register all the application routes. This is the main route registrer.
 func Register(router *goyave.Router) {
 
 	router.CORS(cors.Default())
+	router.Middleware(ratelimiter.New(model.RateLimiterFunc))
 	router.Middleware(gmiddleware.DisallowNonValidatedFields)
 
 	authenticator := auth.Middleware(&model.User{}, &auth.JWTAuthenticator{})

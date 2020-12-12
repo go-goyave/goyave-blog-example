@@ -4,8 +4,10 @@ import (
 	"reflect"
 	"time"
 
+	"github.com/System-Glitch/goyave/v3"
 	"github.com/System-Glitch/goyave/v3/config"
 	"github.com/System-Glitch/goyave/v3/database"
+	"github.com/System-Glitch/goyave/v3/middleware/ratelimiter"
 	"github.com/bxcodec/faker/v3"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/guregu/null.v4"
@@ -70,6 +72,23 @@ func (u *User) bcryptPassword(tx *gorm.DB) error {
 	tx.Statement.SetColumn("password", b)
 
 	return nil
+}
+
+// RateLimiterFunc returns rate limiting configuration
+// Anonymous users have a quota of 50 requests per minute while
+// authenticated users are limited to 500 requests per minute.
+func RateLimiterFunc(request *goyave.Request) ratelimiter.Config {
+	var id interface{} = nil
+	quota := 50
+	if request.User != nil {
+		id = request.User.(*User).ID
+		quota = 500
+	}
+	return ratelimiter.Config{
+		ClientID:      id,
+		RequestQuota:  quota,
+		QuotaDuration: time.Minute,
+	}
 }
 
 // UserGenerator generator function for the User model.
