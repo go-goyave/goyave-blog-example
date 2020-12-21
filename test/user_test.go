@@ -45,10 +45,6 @@ func (suite *UserTestSuite) readFile(path string) ([]byte, error) {
 	return contents, nil
 }
 
-func (suite *UserTestSuite) SetupSuite() {
-	database.Migrate()
-}
-
 func (suite *UserTestSuite) SetupTest() {
 	suite.ClearDatabase()
 }
