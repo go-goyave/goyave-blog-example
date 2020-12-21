@@ -130,6 +130,29 @@ func (suite *ArticleTestSuite) TestIndexSearch() {
 	})
 }
 
+func (suite *ArticleTestSuite) TestShow() {
+	suite.RunServer(route.Register, func() {
+		factory := database.NewFactory(model.ArticleGenerator)
+		override := &model.Article{
+			AuthorID: suite.userID,
+			Title:    "A very interesting article",
+		}
+		factory.Override(override).Save(1)
+
+		resp, err := suite.Get("/article/a-very-interesting-article", nil)
+		suite.Nil(err)
+		if err == nil {
+			defer resp.Body.Close()
+			json := map[string]interface{}{}
+			err := suite.GetJSONBody(resp, &json)
+			suite.Nil(err)
+			if err == nil {
+				suite.Equal(override.Title, json["Title"])
+			}
+		}
+	})
+}
+
 func TestArticleSuite(t *testing.T) {
 	goyave.RunTest(t, new(ArticleTestSuite))
 }
