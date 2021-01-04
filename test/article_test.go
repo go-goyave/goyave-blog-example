@@ -1,6 +1,8 @@
 package test
 
 import (
+	"bytes"
+	"encoding/json"
 	"net/http"
 	"testing"
 
@@ -10,6 +12,7 @@ import (
 	"github.com/System-Glitch/goyave-blog-example/http/controller/article"
 	"github.com/System-Glitch/goyave-blog-example/http/route"
 	_ "github.com/System-Glitch/goyave-blog-example/http/validation"
+	"github.com/System-Glitch/goyave/v3/auth"
 	"github.com/System-Glitch/goyave/v3/database"
 	_ "github.com/System-Glitch/goyave/v3/database/dialect/mysql"
 )
@@ -149,6 +152,52 @@ func (suite *ArticleTestSuite) TestShow() {
 			if err == nil {
 				suite.Equal(override.Title, json["Title"])
 			}
+		}
+	})
+}
+
+func (suite *ArticleTestSuite) TestStore() {
+	suite.RunServer(route.Register, func() {
+		token, err := auth.GenerateToken("jack@example.org")
+		if err != nil {
+			suite.Error(err)
+			return
+		}
+
+		headers := map[string]string{
+			"Content-Type":  "application/json",
+			"Authorization": "Bearer " + token,
+		}
+		request := map[string]interface{}{
+			"title":    "A very interesting article",
+			"contents": "lorem ipsum sit dolor amet",
+		}
+		body, _ := json.Marshal(request)
+		resp, err := suite.Post("/article", headers, bytes.NewReader(body))
+		suite.Nil(err)
+		suite.NotNil(resp)
+		if resp != nil {
+			defer resp.Body.Close()
+			suite.Equal(http.StatusCreated, resp.StatusCode)
+			json := map[string]interface{}{}
+			err := suite.GetJSONBody(resp, &json)
+			suite.Nil(err)
+			if err == nil {
+				suite.Contains(json, "id")
+				suite.Contains(json, "slug")
+				suite.Equal("a-very-interesting-article", json["slug"])
+			}
+
+			count := int64(0)
+			res := database.Conn().
+				Model(&model.Article{}).
+				Where("slug = ?", "a-very-interesting-article").
+				Where("author_id = ?", suite.userID).
+				Count(&count)
+			if err := res.Error; err != nil {
+				suite.Error(err)
+			}
+			suite.Equal(int64(1), count)
 		}
 	})
 }
