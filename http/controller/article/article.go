@@ -101,5 +101,3 @@ func Destroy(response *goyave.Response, request *goyave.Request) {
 		}
 	}
 }
-
-// TODO article tests

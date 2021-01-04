@@ -3,7 +3,6 @@
 </p>
 
 ## Goyave Blog Example
-### 🚧 WORK IN PROGRESS
 
 ![https://github.com/System-Glitch/goyave-blog-example/actions](https://github.com/System-Glitch/goyave-blog-example/workflows/Test/badge.svg)
 
@@ -47,7 +46,7 @@ This codebase was created to demonstrate a fully fledged fullstack application b
 |
 ├── .gitignore
 ├── .golangci.yml            // Settings for the Golangci-lint linter
-├── config.json
+├── config.example.json      // Example config for local development
 ├── config.test.json         // Config file used for tests
 ├── go.mod
 └── kernel.go                // Application entrypoint

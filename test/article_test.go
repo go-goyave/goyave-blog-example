@@ -3,6 +3,7 @@ package test
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -200,6 +201,121 @@ func (suite *ArticleTestSuite) TestStore() {
 			suite.Equal(int64(1), count)
 		}
 	})
+}
+
+func (suite *ArticleTestSuite) TestUpdateByID() {
+	suite.RunServer(route.Register, func() {
+		factory := database.NewFactory(model.ArticleGenerator)
+		override := &model.Article{
+			AuthorID: suite.userID,
+			Title:    "A very interesting article",
+		}
+		article := factory.Override(override).Save(1).([]*model.Article)[0]
+
+		suite.testUpdate(fmt.Sprintf("/article/%d", article.ID))
+	})
+}
+
+func (suite *ArticleTestSuite) TestUpdateBySlug() {
+	suite.RunServer(route.Register, func() {
+		factory := database.NewFactory(model.ArticleGenerator)
+		override := &model.Article{
+			AuthorID: suite.userID,
+			Title:    "A very interesting article",
+		}
+		article := factory.Override(override).Save(1).([]*model.Article)[0]
+
+		suite.testUpdate(fmt.Sprintf("/article/%s", article.Slug))
+	})
+}
+
+func (suite *ArticleTestSuite) testUpdate(url string) {
+	token, err := auth.GenerateToken("jack@example.org")
+	if err != nil {
+		suite.Error(err)
+		return
+	}
+
+	headers := map[string]string{
+		"Content-Type":  "application/json",
+		"Authorization": "Bearer " + token,
+	}
+	request := map[string]interface{}{
+		"title": "A boring article",
+	}
+	body, _ := json.Marshal(request)
+	resp, err := suite.Patch(url, headers, bytes.NewReader(body))
+	suite.Nil(err)
+	suite.NotNil(resp)
+	if resp != nil {
+		defer resp.Body.Close()
+		suite.Equal(http.StatusNoContent, resp.StatusCode)
+
+		count := int64(0)
+		res := database.Conn().
+			Model(&model.Article{}).
+			Where("slug = ?", "a-boring-article").
+			Count(&count)
+		if err := res.Error; err != nil {
+			suite.Error(err)
+		}
+		suite.Equal(int64(1), count)
+	}
+}
+
+func (suite *ArticleTestSuite) TestDestroyByID() {
+	suite.RunServer(route.Register, func() {
+		factory := database.NewFactory(model.ArticleGenerator)
+		override := &model.Article{
+			AuthorID: suite.userID,
+			Title:    "A very interesting article",
+		}
+		article := factory.Override(override).Save(1).([]*model.Article)[0]
+
+		suite.testDestroy(fmt.Sprintf("/article/%d", article.ID), article.ID)
+	})
+}
+
+func (suite *ArticleTestSuite) TestDestroyBySlug() {
+	suite.RunServer(route.Register, func() {
+		factory := database.NewFactory(model.ArticleGenerator)
+		override := &model.Article{
+			AuthorID: suite.userID,
+			Title:    "A very interesting article",
+		}
+		article := factory.Override(override).Save(1).([]*model.Article)[0]
+
+		suite.testDestroy(fmt.Sprintf("/article/%s", article.Slug), article.ID)
+	})
+}
+
+func (suite *ArticleTestSuite) testDestroy(url string, articleID uint) {
+	token, err := auth.GenerateToken("jack@example.org")
+	if err != nil {
+		suite.Error(err)
+		return
+	}
+
+	headers := map[string]string{
+		"Authorization": "Bearer " + token,
+	}
+	resp, err := suite.Delete(url, headers, nil)
+	suite.Nil(err)
+	suite.NotNil(resp)
+	if resp != nil {
+		defer resp.Body.Close()
+		suite.Equal(http.StatusNoContent, resp.StatusCode)
+
+		count := int64(0)
+		res := database.Conn().
+			Model(&model.Article{}).
+			Where("id = ?", articleID).
+			Count(&count)
+		if err := res.Error; err != nil {
+			suite.Error(err)
+		}
+		suite.Equal(int64(0), count)
+	}
 }
 
 func TestArticleSuite(t *testing.T) {
