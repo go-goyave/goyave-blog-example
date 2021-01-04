@@ -19,7 +19,7 @@ type ArticleTestSuite struct {
 	userID uint
 }
 
-type PaginationExpectation struct {
+type paginationExpectation struct {
 	MaxPage       float64
 	Total         float64
 	PageSize      float64
@@ -37,7 +37,7 @@ func (suite *ArticleTestSuite) SetupTest() {
 	suite.userID = factory.Override(override).Save(1).([]*model.User)[0].ID
 }
 
-func (suite *ArticleTestSuite) Expect(resp *http.Response, expectation PaginationExpectation) {
+func (suite *ArticleTestSuite) expect(resp *http.Response, expectation paginationExpectation) {
 	json := map[string]interface{}{}
 	err := suite.GetJSONBody(resp, &json)
 	suite.Nil(err)
@@ -64,7 +64,7 @@ func (suite *ArticleTestSuite) TestIndex() {
 		suite.Nil(err)
 		if err == nil {
 			defer resp.Body.Close()
-			suite.Expect(resp, PaginationExpectation{
+			suite.expect(resp, paginationExpectation{
 				MaxPage:       2,
 				Total:         article.DefaultPageSize + 1,
 				PageSize:      article.DefaultPageSize,
@@ -77,7 +77,7 @@ func (suite *ArticleTestSuite) TestIndex() {
 		suite.Nil(err)
 		if err == nil {
 			defer resp.Body.Close()
-			suite.Expect(resp, PaginationExpectation{
+			suite.expect(resp, paginationExpectation{
 				MaxPage:       2,
 				Total:         article.DefaultPageSize + 1,
 				PageSize:      article.DefaultPageSize,
@@ -90,7 +90,7 @@ func (suite *ArticleTestSuite) TestIndex() {
 		suite.Nil(err)
 		if err == nil {
 			defer resp.Body.Close()
-			suite.Expect(resp, PaginationExpectation{
+			suite.expect(resp, paginationExpectation{
 				MaxPage:       1,
 				Total:         article.DefaultPageSize + 1,
 				PageSize:      15,
@@ -119,7 +119,7 @@ func (suite *ArticleTestSuite) TestIndexSearch() {
 		suite.Nil(err)
 		if err == nil {
 			defer resp.Body.Close()
-			suite.Expect(resp, PaginationExpectation{
+			suite.expect(resp, paginationExpectation{
 				MaxPage:       1,
 				Total:         1,
 				PageSize:      article.DefaultPageSize,
