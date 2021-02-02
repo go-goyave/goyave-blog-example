@@ -1,10 +1,10 @@
 package seeder
 
 import (
-	"github.com/System-Glitch/goyave-blog-example/database/model"
 	"github.com/System-Glitch/goyave/v3"
 	"github.com/System-Glitch/goyave/v3/config"
 	"github.com/System-Glitch/goyave/v3/database"
+	"github.com/go-goyave/goyave-blog-example/database/model"
 )
 
 // Run run seeders if the user table is empty.

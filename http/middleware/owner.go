@@ -4,9 +4,9 @@ import (
 	"errors"
 	"net/http"
 
-	dbModel "github.com/System-Glitch/goyave-blog-example/database/model"
 	"github.com/System-Glitch/goyave/v3"
 	"github.com/System-Glitch/goyave/v3/database"
+	dbModel "github.com/go-goyave/goyave-blog-example/database/model"
 	"gorm.io/gorm"
 )
 

@@ -1,4 +1,4 @@
-module github.com/System-Glitch/goyave-blog-example
+module github.com/go-goyave/goyave-blog-example
 
 go 1.13
 

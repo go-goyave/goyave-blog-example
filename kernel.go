@@ -3,10 +3,10 @@ package main
 import (
 	"os"
 
-	"github.com/System-Glitch/goyave-blog-example/database/seeder"
-	"github.com/System-Glitch/goyave-blog-example/http/route"
+	"github.com/go-goyave/goyave-blog-example/database/seeder"
+	"github.com/go-goyave/goyave-blog-example/http/route"
 
-	_ "github.com/System-Glitch/goyave-blog-example/http/validation"
+	_ "github.com/go-goyave/goyave-blog-example/http/validation"
 
 	"github.com/System-Glitch/goyave/v3"
 	_ "github.com/System-Glitch/goyave/v3/database/dialect/mysql"

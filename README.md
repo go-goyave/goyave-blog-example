@@ -4,7 +4,7 @@
 
 ## Goyave Blog Example
 
-![https://github.com/System-Glitch/goyave-blog-example/actions](https://github.com/System-Glitch/goyave-blog-example/workflows/Test/badge.svg)
+![https://github.com/go-goyave/goyave-blog-example/actions](https://github.com/go-goyave/goyave-blog-example/workflows/Test/badge.svg)
 
 This codebase was created to demonstrate a fully fledged fullstack application built with **[Goyave](https://github.com/System-Glitch/goyave)** including CRUD operations, authentication, routing, pagination, and more.
 

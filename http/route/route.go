@@ -1,10 +1,10 @@
 package route
 
 import (
-	"github.com/System-Glitch/goyave-blog-example/database/model"
-	"github.com/System-Glitch/goyave-blog-example/http/controller/article"
-	"github.com/System-Glitch/goyave-blog-example/http/controller/user"
-	"github.com/System-Glitch/goyave-blog-example/http/middleware"
+	"github.com/go-goyave/goyave-blog-example/database/model"
+	"github.com/go-goyave/goyave-blog-example/http/controller/article"
+	"github.com/go-goyave/goyave-blog-example/http/controller/user"
+	"github.com/go-goyave/goyave-blog-example/http/middleware"
 
 	"github.com/System-Glitch/goyave/v3"
 	"github.com/System-Glitch/goyave/v3/auth"

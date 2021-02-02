@@ -11,9 +11,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/System-Glitch/goyave-blog-example/database/model"
-	userController "github.com/System-Glitch/goyave-blog-example/http/controller/user"
-	"github.com/System-Glitch/goyave-blog-example/http/route"
+	"github.com/go-goyave/goyave-blog-example/database/model"
+	userController "github.com/go-goyave/goyave-blog-example/http/controller/user"
+	"github.com/go-goyave/goyave-blog-example/http/route"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/guregu/null.v4"
 
@@ -23,8 +23,8 @@ import (
 	"github.com/System-Glitch/goyave/v3/helper/filesystem"
 	"github.com/System-Glitch/goyave/v3/validation"
 
-	_ "github.com/System-Glitch/goyave-blog-example/http/validation"
 	_ "github.com/System-Glitch/goyave/v3/database/dialect/mysql"
+	_ "github.com/go-goyave/goyave-blog-example/http/validation"
 )
 
 type UserTestSuite struct {
