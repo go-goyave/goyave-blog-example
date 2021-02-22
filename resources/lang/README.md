@@ -23,4 +23,4 @@ Each language directory contains three files. Each file is **optional**.
 
 All directories in the `resources/lang` directory are automatically loaded when the server starts.
 
-Learn more about localization [here](https://system-glitch.github.io/goyave/guide/advanced/localization.html).
+Learn more about localization [here](https://goyave.dev/guide/advanced/localization.html).

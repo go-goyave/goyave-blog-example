@@ -14,4 +14,4 @@ WORKDIR /app
 
 EXPOSE 8080
 
-CMD dockerize -wait tcp://mariadb:3306 reflex -s -- sh -c 'go run kernel.go'
+CMD dockerize -wait tcp://mariadb:3306 reflex -s -- sh -c 'go run main.go'

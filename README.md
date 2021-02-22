@@ -49,24 +49,14 @@ This codebase was created to demonstrate a fully fledged fullstack application b
 ├── config.example.json      // Example config for local development
 ├── config.test.json         // Config file used for tests
 ├── go.mod
-└── kernel.go                // Application entrypoint
+└── main.go                  // Application entrypoint
 ```
 
 ### Running the project
 
 First, make your own configuration for your local environment. You can copy `config.example.json` to `config.json`.
 
-Run `go run kernel.go` in your project's directory to start the server, then try to request the `hello` route.
-```
-$ curl http://localhost:8080/hello
-Hi!
-```
-
-There is also an `echo` route, with a basic body validation.
-```
-$ curl -H "Content-Type: application/json" -X POST -d '{"text":"abc 123"}' http://localhost:8080/echo
-abc 123
-```
+Run `go run main.go` in your project's directory to start the server.
 
 **Using docker:**
 
@@ -88,7 +78,7 @@ If `app.environment` is set to `localhost` in the config and if the database is 
 
 The Goyave framework has an extensive documentation covering in-depth subjects and teaching you how to run a project using Goyave from setup to deployment.
 
-<a href="https://system-glitch.github.io/goyave/guide/installation"><h3 align="center">Read the documentation</h3></a>
+<a href="https://goyave.dev/guide/installation"><h3 align="center">Read the documentation</h3></a>
 
 <a href="https://pkg.go.dev/github.com/System-Glitch/goyave/v3"><h3 align="center">pkg.go.dev</h3></a>
 
