@@ -4,8 +4,8 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/System-Glitch/goyave/v3/database"
 	"github.com/go-goyave/goyave-blog-example/database/model"
+	"goyave.dev/goyave/v3/database"
 )
 
 const (

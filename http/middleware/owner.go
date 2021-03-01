@@ -4,10 +4,10 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/System-Glitch/goyave/v3"
-	"github.com/System-Glitch/goyave/v3/database"
 	dbModel "github.com/go-goyave/goyave-blog-example/database/model"
 	"gorm.io/gorm"
+	"goyave.dev/goyave/v3"
+	"goyave.dev/goyave/v3/database"
 )
 
 // Owner checks if the authenticated user is the owner of the requested resource.

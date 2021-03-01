@@ -7,15 +7,15 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/System-Glitch/goyave/v3"
+	"goyave.dev/goyave/v3"
 
-	"github.com/System-Glitch/goyave/v3/auth"
-	"github.com/System-Glitch/goyave/v3/database"
-	_ "github.com/System-Glitch/goyave/v3/database/dialect/mysql"
 	"github.com/go-goyave/goyave-blog-example/database/model"
 	"github.com/go-goyave/goyave-blog-example/http/controller/article"
 	"github.com/go-goyave/goyave-blog-example/http/route"
 	_ "github.com/go-goyave/goyave-blog-example/http/validation"
+	"goyave.dev/goyave/v3/auth"
+	"goyave.dev/goyave/v3/database"
+	_ "goyave.dev/goyave/v3/database/dialect/mysql"
 )
 
 type ArticleTestSuite struct {

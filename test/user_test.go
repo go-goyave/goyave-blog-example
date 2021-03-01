@@ -17,14 +17,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/guregu/null.v4"
 
-	"github.com/System-Glitch/goyave/v3"
-	"github.com/System-Glitch/goyave/v3/auth"
-	"github.com/System-Glitch/goyave/v3/database"
-	"github.com/System-Glitch/goyave/v3/helper/filesystem"
-	"github.com/System-Glitch/goyave/v3/validation"
+	"goyave.dev/goyave/v3"
+	"goyave.dev/goyave/v3/auth"
+	"goyave.dev/goyave/v3/database"
+	"goyave.dev/goyave/v3/helper/filesystem"
+	"goyave.dev/goyave/v3/validation"
 
-	_ "github.com/System-Glitch/goyave/v3/database/dialect/mysql"
 	_ "github.com/go-goyave/goyave-blog-example/http/validation"
+	_ "goyave.dev/goyave/v3/database/dialect/mysql"
 )
 
 type UserTestSuite struct {

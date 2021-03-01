@@ -3,8 +3,8 @@ package seeder
 import (
 	"github.com/go-goyave/goyave-blog-example/database/model"
 
-	"github.com/System-Glitch/goyave/v3/database"
 	"github.com/bxcodec/faker/v3"
+	"goyave.dev/goyave/v3/database"
 )
 
 const (

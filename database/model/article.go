@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/System-Glitch/goyave/v3/database"
 	"github.com/bxcodec/faker/v3"
 	"github.com/gosimple/slug"
 	"gorm.io/gorm"
+	"goyave.dev/goyave/v3/database"
 )
 
 func init() {

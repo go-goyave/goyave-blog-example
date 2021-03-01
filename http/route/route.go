@@ -6,11 +6,11 @@ import (
 	"github.com/go-goyave/goyave-blog-example/http/controller/user"
 	"github.com/go-goyave/goyave-blog-example/http/middleware"
 
-	"github.com/System-Glitch/goyave/v3"
-	"github.com/System-Glitch/goyave/v3/auth"
-	"github.com/System-Glitch/goyave/v3/cors"
-	gmiddleware "github.com/System-Glitch/goyave/v3/middleware"
-	"github.com/System-Glitch/goyave/v3/middleware/ratelimiter"
+	"goyave.dev/goyave/v3"
+	"goyave.dev/goyave/v3/auth"
+	"goyave.dev/goyave/v3/cors"
+	gmiddleware "goyave.dev/goyave/v3/middleware"
+	"goyave.dev/goyave/v3/middleware/ratelimiter"
 )
 
 // Register all the application routes. This is the main route registrer.

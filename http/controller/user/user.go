@@ -3,11 +3,11 @@ package user
 import (
 	"net/http"
 
-	"github.com/System-Glitch/goyave/v3"
-	"github.com/System-Glitch/goyave/v3/database"
-	"github.com/System-Glitch/goyave/v3/helper/filesystem"
 	"github.com/go-goyave/goyave-blog-example/database/model"
 	"github.com/mitchellh/go-homedir"
+	"goyave.dev/goyave/v3"
+	"goyave.dev/goyave/v3/database"
+	"goyave.dev/goyave/v3/helper/filesystem"
 )
 
 var (

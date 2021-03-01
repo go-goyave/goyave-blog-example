@@ -1,6 +1,6 @@
 package validation
 
-import "github.com/System-Glitch/goyave/v3/validation"
+import "goyave.dev/goyave/v3/validation"
 
 func init() {
 	validation.AddRule("password", &validation.RuleDefinition{

@@ -1,6 +1,6 @@
 package article
 
-import "github.com/System-Glitch/goyave/v3/validation"
+import "goyave.dev/goyave/v3/validation"
 
 var (
 	// InsertRequest validates Post requests for articles

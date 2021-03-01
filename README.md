@@ -80,7 +80,7 @@ The Goyave framework has an extensive documentation covering in-depth subjects a
 
 <a href="https://goyave.dev/guide/installation"><h3 align="center">Read the documentation</h3></a>
 
-<a href="https://pkg.go.dev/github.com/System-Glitch/goyave/v3"><h3 align="center">pkg.go.dev</h3></a>
+<a href="https://pkg.go.dev/goyave.dev/goyave/v3"><h3 align="center">pkg.go.dev</h3></a>
 
 ## License
 
