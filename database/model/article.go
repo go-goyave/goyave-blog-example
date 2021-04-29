@@ -21,7 +21,7 @@ type Article struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	Title     string `gorm:"type:char(200);not null"`
-	Contents  string `gorm:"type:longtext;not null"`
+	Contents  string `gorm:"type:text;not null"`
 	Slug      string `gorm:"type:char(80);not null;unique;uniqueIndex"`
 	AuthorID  uint   `json:"-"`
 	Author    *User  `gorm:"constraint:OnDelete:CASCADE;" json:",omitempty"`
