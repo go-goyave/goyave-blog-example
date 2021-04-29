@@ -35,7 +35,7 @@ func registerUserRoutes(parent *goyave.Router, authenticator goyave.Middleware) 
 	userRouter.Post("/", user.Register).Validate(user.InsertRequest)
 	userRouter.Get("/{id:[0-9]+}/image", user.Image)
 
-	authRouter := userRouter.Subrouter("")
+	authRouter := userRouter.Group()
 	authRouter.Middleware(authenticator)
 	authRouter.Get("/", user.Show)
 	authRouter.Patch("/", user.Update).Validate(user.UpdateRequest)
@@ -48,11 +48,11 @@ func registerArticleRoutes(parent *goyave.Router, authenticator goyave.Middlewar
 	articleRouter.Get("/", article.Index).Validate(article.IndexRequest)
 	articleRouter.Get("/{slug}", article.Show)
 
-	authRouter := articleRouter.Subrouter("")
+	authRouter := articleRouter.Group()
 	authRouter.Middleware(authenticator)
 	authRouter.Post("/", article.Store).Validate(article.InsertRequest)
 
-	ownedRouter := authRouter.Subrouter("")
+	ownedRouter := authRouter.Group()
 	ownerMiddleware := middleware.Owner("id", "author_id", &model.Article{})
 	ownedRouter.Middleware(ownerMiddleware)
 	ownedRouter.Patch("/{id:[0-9]+}", article.Update).Validate(article.UpdateRequest)
