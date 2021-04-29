@@ -9,7 +9,6 @@ require (
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
 	gopkg.in/guregu/null.v4 v4.0.0
-	gorm.io/driver/mysql v1.0.6 // indirect
-	gorm.io/gorm v1.21.9
+	gorm.io/gorm v1.21.8
 	goyave.dev/goyave/v3 v3.8.0
 )
