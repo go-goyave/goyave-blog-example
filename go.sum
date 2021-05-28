@@ -204,4 +204,6 @@ gorm.io/gorm v1.21.8 h1:2CEwZSzogdhsKPlJ9OvBKTdlWIpELXb6HbfLfMNhSYI=
 gorm.io/gorm v1.21.8/go.mod h1:F+OptMscr0P2F2qU97WT1WimdH9GaQPoDW7AYd5i2Y0=
 goyave.dev/goyave/v3 v3.9.0 h1:BEURkfQKcixXIaJmTd+tfigUkJqVzyrcL15gfwinAV4=
 goyave.dev/goyave/v3 v3.9.0/go.mod h1:/UoISioTpcMk5yIg4cpFcyu01IaSd2/tOM96LHZ1ORw=
+goyave.dev/goyave/v3 v3.9.1 h1:+wN7MAIVNRHpZoaaJjOMizvuOsn5wkHd7ofr50LbsZU=
+goyave.dev/goyave/v3 v3.9.1/go.mod h1:/UoISioTpcMk5yIg4cpFcyu01IaSd2/tOM96LHZ1ORw=
 honnef.co/go/tools v0.0.1-2019.2.3/go.mod h1:a3bituU0lyd329TUQxRnasdCoJDkEUEAqEt0JzvZhAg=
