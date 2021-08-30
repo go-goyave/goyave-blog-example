@@ -8,8 +8,8 @@ import (
 
 	_ "github.com/go-goyave/goyave-blog-example/http/validation"
 
-	"goyave.dev/goyave/v3"
-	_ "goyave.dev/goyave/v3/database/dialect/mysql"
+	"goyave.dev/goyave/v4"
+	_ "goyave.dev/goyave/v4/database/dialect/mysql"
 )
 
 func main() {

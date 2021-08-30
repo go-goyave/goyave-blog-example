@@ -1,6 +1,6 @@
 package validation
 
-import "goyave.dev/goyave/v3/validation"
+import "goyave.dev/goyave/v4/validation"
 
 func init() {
 	validation.AddRule("password", &validation.RuleDefinition{
@@ -29,8 +29,8 @@ func isSpecialChar(r rune) bool {
 // - at least one uppercase and one lowercase letter
 // - at least one digit
 // - at least one special character (! @ # ? ] etc., any utf-8 character that is not a letter or a digit)
-func validatePassword(field string, value interface{}, parameters []string, form map[string]interface{}) bool {
-	str, ok := value.(string)
+func validatePassword(ctx *validation.Context) bool {
+	str, ok := ctx.Value.(string)
 
 	if ok {
 		lower := false

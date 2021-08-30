@@ -6,11 +6,10 @@ import (
 	"github.com/go-goyave/goyave-blog-example/http/controller/user"
 	"github.com/go-goyave/goyave-blog-example/http/middleware"
 
-	"goyave.dev/goyave/v3"
-	"goyave.dev/goyave/v3/auth"
-	"goyave.dev/goyave/v3/cors"
-	gmiddleware "goyave.dev/goyave/v3/middleware"
-	"goyave.dev/goyave/v3/middleware/ratelimiter"
+	"goyave.dev/goyave/v4"
+	"goyave.dev/goyave/v4/auth"
+	"goyave.dev/goyave/v4/cors"
+	"goyave.dev/goyave/v4/middleware/ratelimiter"
 )
 
 // Register all the application routes. This is the main route registrer.
@@ -18,7 +17,6 @@ func Register(router *goyave.Router) {
 
 	router.CORS(cors.Default())
 	router.Middleware(ratelimiter.New(model.RateLimiterFunc))
-	router.Middleware(gmiddleware.DisallowNonValidatedFields)
 
 	authenticator := auth.Middleware(&model.User{}, &auth.JWTAuthenticator{})
 

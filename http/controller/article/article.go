@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/go-goyave/goyave-blog-example/database/model"
-	"goyave.dev/goyave/v3"
-	"goyave.dev/goyave/v3/database"
-	"goyave.dev/goyave/v3/helper"
+	"goyave.dev/goyave/v4"
+	"goyave.dev/goyave/v4/database"
+	"goyave.dev/goyave/v4/helper"
 )
 
 const (

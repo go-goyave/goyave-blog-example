@@ -12,7 +12,7 @@ This codebase was created to demonstrate a fully fledged fullstack application b
 
 ### Requirements
 
-- Go 1.13+
+- Go 1.16+
 - Go modules
 
 ### Directory structure
@@ -80,7 +80,7 @@ The Goyave framework has an extensive documentation covering in-depth subjects a
 
 <a href="https://goyave.dev/guide/installation"><h3 align="center">Read the documentation</h3></a>
 
-<a href="https://pkg.go.dev/goyave.dev/goyave/v3"><h3 align="center">pkg.go.dev</h3></a>
+<a href="https://pkg.go.dev/goyave.dev/goyave/v4"><h3 align="center">pkg.go.dev</h3></a>
 
 ## License
 

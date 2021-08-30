@@ -2,9 +2,9 @@ package seeder
 
 import (
 	"github.com/go-goyave/goyave-blog-example/database/model"
-	"goyave.dev/goyave/v3"
-	"goyave.dev/goyave/v3/config"
-	"goyave.dev/goyave/v3/database"
+	"goyave.dev/goyave/v4"
+	"goyave.dev/goyave/v4/config"
+	"goyave.dev/goyave/v4/database"
 )
 
 // Run run seeders if the user table is empty.

@@ -7,15 +7,15 @@ import (
 	"net/http"
 	"testing"
 
-	"goyave.dev/goyave/v3"
+	"goyave.dev/goyave/v4"
 
 	"github.com/go-goyave/goyave-blog-example/database/model"
 	"github.com/go-goyave/goyave-blog-example/http/controller/article"
 	"github.com/go-goyave/goyave-blog-example/http/route"
 	_ "github.com/go-goyave/goyave-blog-example/http/validation"
-	"goyave.dev/goyave/v3/auth"
-	"goyave.dev/goyave/v3/database"
-	_ "goyave.dev/goyave/v3/database/dialect/mysql"
+	"goyave.dev/goyave/v4/auth"
+	"goyave.dev/goyave/v4/database"
+	_ "goyave.dev/goyave/v4/database/dialect/mysql"
 )
 
 type ArticleTestSuite struct {
@@ -46,12 +46,12 @@ func (suite *ArticleTestSuite) expect(resp *http.Response, expectation paginatio
 	err := suite.GetJSONBody(resp, &json)
 	suite.Nil(err)
 	if err == nil {
-		suite.Equal(expectation.MaxPage, json["MaxPage"])
-		suite.Equal(expectation.Total, json["Total"])
-		suite.Equal(expectation.PageSize, json["PageSize"])
-		suite.Equal(expectation.CurrentPage, json["CurrentPage"])
+		suite.Equal(expectation.MaxPage, json["maxPage"])
+		suite.Equal(expectation.Total, json["total"])
+		suite.Equal(expectation.PageSize, json["pageSize"])
+		suite.Equal(expectation.CurrentPage, json["currentPage"])
 
-		records := json["Records"].([]interface{})
+		records := json["records"].([]interface{})
 		suite.Len(records, int(expectation.RecordsLength))
 	}
 }

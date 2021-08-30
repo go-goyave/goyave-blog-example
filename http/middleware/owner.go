@@ -6,8 +6,8 @@ import (
 
 	dbModel "github.com/go-goyave/goyave-blog-example/database/model"
 	"gorm.io/gorm"
-	"goyave.dev/goyave/v3"
-	"goyave.dev/goyave/v3/database"
+	"goyave.dev/goyave/v4"
+	"goyave.dev/goyave/v4/database"
 )
 
 // Owner checks if the authenticated user is the owner of the requested resource.

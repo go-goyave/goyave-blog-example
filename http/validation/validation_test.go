@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"goyave.dev/goyave/v4/validation"
 )
 
 func TestIsLowerCaseLetter(t *testing.T) {
@@ -59,10 +60,10 @@ func TestIsSpecialChar(t *testing.T) {
 }
 
 func TestValidatePassword(t *testing.T) {
-	assert.True(t, validatePassword("password", "pAssword.1", []string{}, nil))
-	assert.False(t, validatePassword("password", "pAssword.", []string{}, nil))
-	assert.False(t, validatePassword("password", "pAssword1", []string{}, nil))
-	assert.False(t, validatePassword("password", "password.1", []string{}, nil))
-	assert.False(t, validatePassword("password", "PASSWORD.1", []string{}, nil))
-	assert.False(t, validatePassword("password", 42, []string{}, nil))
+	assert.True(t, validatePassword(&validation.Context{Value: "pAssword.1"}))
+	assert.False(t, validatePassword(&validation.Context{Value: "pAssword."}))
+	assert.False(t, validatePassword(&validation.Context{Value: "pAssword1"}))
+	assert.False(t, validatePassword(&validation.Context{Value: "password.1"}))
+	assert.False(t, validatePassword(&validation.Context{Value: "PASSWORD.1"}))
+	assert.False(t, validatePassword(&validation.Context{Value: 42}))
 }

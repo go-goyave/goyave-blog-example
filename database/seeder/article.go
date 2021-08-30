@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/go-goyave/goyave-blog-example/database/model"
-	"goyave.dev/goyave/v3/database"
+	"goyave.dev/goyave/v4/database"
 )
 
 const (
