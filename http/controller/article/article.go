@@ -79,7 +79,18 @@ func Update(response *goyave.Response, request *goyave.Request) {
 		result = result.First(&article, request.Params["id"])
 	}
 	if response.HandleDatabaseError(result) {
-		if err := db.Model(&article).Updates(request.Data).Error; err != nil {
+		updates := map[string]interface{}{}
+		for c := range UpdateRequest {
+			if request.Has(c) {
+				updates[c] = request.Data[c]
+			}
+		}
+
+		if len(updates) <= 0 {
+			return
+		}
+
+		if err := db.Model(&article).Updates(updates).Error; err != nil {
 			response.Error(err)
 		}
 	}

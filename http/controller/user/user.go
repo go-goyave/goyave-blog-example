@@ -87,7 +87,18 @@ func Update(response *goyave.Response, request *goyave.Request) {
 		}
 	}
 
-	if err := db.Model(request.User).Updates(request.Data).Error; err != nil {
+	updates := map[string]interface{}{}
+	for c := range UpdateRequest {
+		if request.Has(c) {
+			updates[c] = request.Data[c]
+		}
+	}
+
+	if len(updates) <= 0 {
+		return
+	}
+
+	if err := db.Model(request.User).Updates(updates).Error; err != nil {
 		response.Error(err)
 	}
 }
