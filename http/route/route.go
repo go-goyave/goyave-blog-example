@@ -9,6 +9,7 @@ import (
 	"goyave.dev/goyave/v4"
 	"goyave.dev/goyave/v4/auth"
 	"goyave.dev/goyave/v4/cors"
+	"goyave.dev/goyave/v4/log"
 	"goyave.dev/goyave/v4/middleware/ratelimiter"
 )
 
@@ -16,7 +17,8 @@ import (
 func Register(router *goyave.Router) {
 
 	router.CORS(cors.Default())
-	router.Middleware(ratelimiter.New(model.RateLimiterFunc))
+	router.GlobalMiddleware(log.CombinedLogMiddleware())
+	router.GlobalMiddleware(ratelimiter.New(model.RateLimiterFunc))
 
 	authenticator := auth.Middleware(&model.User{}, &auth.JWTAuthenticator{})
 

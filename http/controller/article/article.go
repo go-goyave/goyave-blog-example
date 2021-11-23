@@ -6,7 +6,7 @@ import (
 	"github.com/go-goyave/goyave-blog-example/database/model"
 	"goyave.dev/goyave/v4"
 	"goyave.dev/goyave/v4/database"
-	"goyave.dev/goyave/v4/helper"
+	"goyave.dev/goyave/v4/util/sqlutil"
 )
 
 const (
@@ -31,7 +31,7 @@ func Index(response *goyave.Response, request *goyave.Request) {
 	tx := database.Conn()
 
 	if request.Has("search") {
-		search := helper.EscapeLike(request.String("search"))
+		search := sqlutil.EscapeLike(request.String("search"))
 		tx = tx.Where("title LIKE ?", "%"+search+"%")
 	}
 

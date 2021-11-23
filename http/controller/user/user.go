@@ -7,7 +7,7 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"goyave.dev/goyave/v4"
 	"goyave.dev/goyave/v4/database"
-	"goyave.dev/goyave/v4/helper/filesystem"
+	"goyave.dev/goyave/v4/util/fsutil"
 )
 
 var (
@@ -38,7 +38,7 @@ func Register(response *goyave.Response, request *goyave.Request) {
 
 	if err := database.Conn().Create(user).Error; err != nil {
 		if user.Image.Valid {
-			filesystem.Delete(StoragePath + user.Image.String)
+			fsutil.Delete(StoragePath + user.Image.String)
 		}
 		response.Error(err)
 	} else {
@@ -76,8 +76,8 @@ func Update(response *goyave.Response, request *goyave.Request) {
 	user := request.User.(*model.User)
 	if request.Has("image") {
 		path := StoragePath + user.Image.String
-		if user.Image.Valid && filesystem.FileExists(path) {
-			filesystem.Delete(path)
+		if user.Image.Valid && fsutil.FileExists(path) {
+			fsutil.Delete(path)
 		}
 
 		if request.Data["image"] != nil {

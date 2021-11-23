@@ -20,7 +20,7 @@ import (
 	"goyave.dev/goyave/v4"
 	"goyave.dev/goyave/v4/auth"
 	"goyave.dev/goyave/v4/database"
-	"goyave.dev/goyave/v4/helper/filesystem"
+	"goyave.dev/goyave/v4/util/fsutil"
 	"goyave.dev/goyave/v4/validation"
 
 	_ "github.com/go-goyave/goyave-blog-example/http/validation"
@@ -181,7 +181,7 @@ func (suite *UserTestSuite) TestRegisterWithImage() {
 				}
 
 				suite.Equal(ref, actual)
-				filesystem.Delete(actualPath)
+				fsutil.Delete(actualPath)
 			}
 		}
 	})
@@ -274,7 +274,7 @@ func (suite *UserTestSuite) TestImage() {
 			suite.Error(err)
 			return
 		}
-		defer filesystem.Delete(destPath)
+		defer fsutil.Delete(destPath)
 
 		resp, err := suite.Get(fmt.Sprintf("/user/%d/image", u.ID), nil)
 		suite.Nil(err)
@@ -429,7 +429,7 @@ func (suite *UserTestSuite) TestUpdateImage() {
 				}
 				suite.Equal(ref, actual)
 
-				filesystem.Delete(actualPath)
+				fsutil.Delete(actualPath)
 			}
 		}
 	})
