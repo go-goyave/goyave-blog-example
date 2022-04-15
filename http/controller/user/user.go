@@ -12,7 +12,7 @@ import (
 
 var (
 	// StoragePath the path used to store user profile pictures
-	StoragePath string = ""
+	StoragePath string
 )
 
 func init() {

@@ -78,7 +78,7 @@ func (u *User) bcryptPassword(tx *gorm.DB) error {
 // Anonymous users have a quota of 50 requests per minute while
 // authenticated users are limited to 500 requests per minute.
 func RateLimiterFunc(request *goyave.Request) ratelimiter.Config {
-	var id interface{} = nil
+	var id interface{}
 	quota := 50
 	if request.User != nil {
 		id = request.User.(*User).ID
