@@ -3,36 +3,52 @@
         "name": "goyave-blog-example",
         "environment": "localhost",
         "debug": true,
-        "defaultLanguage": "en-US",
-        "bcryptCost": 10
+        "defaultLanguage": "en-US"
     },
     "server": {
-        "host": "0.0.0.0",
-        "maintenance": false,
-        "protocol": "http",
+        "host": "127.0.0.1",
         "domain": "",
         "port": 8080,
-        "httpsPort": 443,
-        "timeout": 10,
-        "maxUploadSize": 10
+        "writeTimeout": 10,
+        "readTimeout": 10,
+        "readHeaderTimeout": 10,
+        "idleTimeout": 20,
+        "websocketCloseTimeout": 10,
+        "maxUploadSize": 10.0,
+        "proxy": {
+            "protocol": "http",
+            "host": "",
+            "port": 80,
+            "base": ""
+        }
     },
     "database": {
-        "connection": "mysql",
-        "host": "mariadb",
-        "port": 3306,
-        "name": "goyave",
-        "username": "goyave",
+        "connection": "postgres",
+        "host": "127.0.0.1",
+        "port": 5432,
+        "name": "blog",
+        "username": "dbuser",
         "password": "secret",
-        "options": "charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true&loc=Local",
+        "options": "sslmode=disable application_name=goyave-blog-example",
         "maxOpenConnections": 20,
         "maxIdleConnections": 20,
         "maxLifetime": 300,
-        "autoMigrate": true
+        "defaultReadQueryTimeout": 20000,
+        "defaultWriteQueryTimeout": 40000,
+        "config": {
+            "skipDefaultTransaction": false,
+            "dryRun": false,
+            "prepareStmt": true,
+            "disableNestedTransaction": false,
+            "allowGlobalUpdate": false,
+            "disableAutomaticPing": false,
+            "disableForeignKeyConstraintWhenMigrating": false
+        }
     },
     "auth": {
         "jwt": {
-            "expiry": 3600,
-            "secret": "1C4C304DACBEC13CC975A3708CFAF6AED0A478573C1C0D7EBFF0E7E8530C06B7"
+            "secret": "jwt-secret",
+            "expiry": 3000
         }
     }
 }

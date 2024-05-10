@@ -1,114 +1,111 @@
 package article
 
 import (
+	"context"
 	"net/http"
+	"strconv"
 
-	"github.com/go-goyave/goyave-blog-example/database/model"
-	"goyave.dev/goyave/v4"
-	"goyave.dev/goyave/v4/database"
-	"goyave.dev/goyave/v4/util/sqlutil"
+	"github.com/go-goyave/goyave-blog-example/dto"
+	"github.com/go-goyave/goyave-blog-example/http/middleware"
+	"github.com/go-goyave/goyave-blog-example/service"
+	"goyave.dev/filter"
+	"goyave.dev/goyave/v5"
+	"goyave.dev/goyave/v5/auth"
+	"goyave.dev/goyave/v5/database"
+	"goyave.dev/goyave/v5/util/typeutil"
 )
 
-const (
-	// DefaultPageSize the number of records per page when paginating
-	DefaultPageSize = 10
-)
-
-// Index paginates all articles.
-// Accepts the "page" and "pageSize" query parameters.
-// If "search" query parameter is set, performs naive search by title.
-func Index(response *goyave.Response, request *goyave.Request) {
-	articles := []model.Article{}
-	page := 1
-	if request.Has("page") {
-		page = request.Integer("page")
-	}
-	pageSize := DefaultPageSize
-	if request.Has("pageSize") {
-		pageSize = request.Integer("pageSize")
-	}
-
-	tx := database.Conn()
-
-	if request.Has("search") {
-		search := sqlutil.EscapeLike(request.String("search"))
-		tx = tx.Where("title LIKE ?", "%"+search+"%")
-	}
-
-	paginator := database.NewPaginator(tx, page, pageSize, &articles)
-	result := paginator.Find()
-	if response.HandleDatabaseError(result) {
-		response.JSON(http.StatusOK, paginator)
-	}
+type Service interface {
+	Index(ctx context.Context, request *filter.Request) (*database.PaginatorDTO[*dto.Article], error)
+	GetBySlug(ctx context.Context, slug string) (*dto.Article, error)
+	Create(ctx context.Context, createDTO *dto.CreateArticle) error
+	Update(ctx context.Context, id uint, updateDTO *dto.UpdateArticle) error
+	Delete(ctx context.Context, id uint) error
+	IsOwner(ctx context.Context, resourceID, ownerID uint) (bool, error)
 }
 
-// Show a single article.
-func Show(response *goyave.Response, request *goyave.Request) {
-	article := model.Article{}
-	result := database.Conn().Where("slug = ?", request.Params["slug"]).First(&article)
-	if response.HandleDatabaseError(result) {
-		response.JSON(http.StatusOK, article)
-	}
+type Controller struct {
+	goyave.Component
+	ArticleService Service
 }
 
-// Store a new article.
-func Store(response *goyave.Response, request *goyave.Request) {
-	article := model.Article{
-		Title:    request.String("title"),
-		Contents: request.String("contents"),
-		AuthorID: request.User.(*model.User).ID,
+func NewController() *Controller {
+	return &Controller{}
+}
+
+func (ctrl *Controller) Init(server *goyave.Server) {
+	ctrl.Component.Init(server)
+	ctrl.ArticleService = server.Service(service.Article).(Service)
+}
+
+func (ctrl *Controller) RegisterRoutes(router *goyave.Router) {
+	subrouter := router.Subrouter("/articles")
+	subrouter.Get("/", ctrl.Index).ValidateQuery(filter.Validation)
+	subrouter.Get("/{slug}", ctrl.Show)
+
+	authRouter := subrouter.Group().SetMeta(auth.MetaAuth, true)
+	authRouter.Post("/", ctrl.Create).ValidateBody(ctrl.CreateRequest)
+
+	ownedRouter := authRouter.Group()
+	ownerMiddleware := middleware.NewOwner("articleID", ctrl.ArticleService)
+	ownedRouter.Middleware(ownerMiddleware)
+	ownedRouter.Patch("/{articleID:[0-9]+}", ctrl.Update).ValidateBody(ctrl.UpdateRequest)
+	ownedRouter.Delete("/{articleID:[0-9]+}", ctrl.Delete)
+}
+
+func (ctrl *Controller) Index(response *goyave.Response, request *goyave.Request) {
+	paginator, err := ctrl.ArticleService.Index(request.Context(), filter.NewRequest(request.Query))
+	if response.WriteDBError(err) {
+		return
 	}
-	if err := database.Conn().Create(&article).Error; err != nil {
+	response.JSON(http.StatusOK, paginator)
+}
+
+func (ctrl *Controller) Show(response *goyave.Response, request *goyave.Request) {
+	user, err := ctrl.ArticleService.GetBySlug(request.Context(), request.RouteParams["slug"])
+	if err != nil {
 		response.Error(err)
-	} else {
-		response.JSON(http.StatusCreated, map[string]interface{}{
-			"id":   article.ID,
-			"slug": article.Slug,
-		})
+		return
+	}
+	response.JSON(http.StatusOK, user)
+}
+
+func (ctrl *Controller) Create(response *goyave.Response, request *goyave.Request) {
+	createDTO := typeutil.MustConvert[*dto.CreateArticle](request.Data)
+	createDTO.AuthorID = request.User.(*dto.InternalUser).ID
+
+	err := ctrl.ArticleService.Create(request.Context(), createDTO)
+	if err != nil {
+		response.Error(err)
+		return
+	}
+	response.Status(http.StatusCreated)
+}
+
+func (ctrl *Controller) Update(response *goyave.Response, request *goyave.Request) {
+	id, err := strconv.ParseUint(request.RouteParams["articleID"], 10, 64)
+	if err != nil {
+		response.Status(http.StatusNotFound)
+		return
+	}
+
+	updateDTO := typeutil.MustConvert[*dto.UpdateArticle](request.Data)
+
+	err = ctrl.ArticleService.Update(request.Context(), uint(id), updateDTO)
+	if response.WriteDBError(err) {
+		return
 	}
 }
 
-// Update an existing article. Only the author of the article can do that.
-func Update(response *goyave.Response, request *goyave.Request) {
-	article := model.Article{}
-	db := database.Conn()
-	result := db.Select("id")
-	if slug, ok := request.Params["slug"]; ok {
-		result = result.Where("slug = ?", slug).First(&article)
-	} else {
-		result = result.First(&article, request.Params["id"])
+func (ctrl *Controller) Delete(response *goyave.Response, request *goyave.Request) {
+	id, err := strconv.ParseUint(request.RouteParams["articleID"], 10, 64)
+	if err != nil {
+		response.Status(http.StatusNotFound)
+		return
 	}
-	if response.HandleDatabaseError(result) {
-		updates := map[string]interface{}{}
-		for c := range UpdateRequest {
-			if request.Has(c) {
-				updates[c] = request.Data[c]
-			}
-		}
 
-		if len(updates) <= 0 {
-			return
-		}
-
-		if err := db.Model(&article).Updates(updates).Error; err != nil {
-			response.Error(err)
-		}
-	}
-}
-
-// Destroy an existing article. Only the author of the article can do that.
-func Destroy(response *goyave.Response, request *goyave.Request) {
-	article := model.Article{}
-	db := database.Conn()
-	result := db.Select("id")
-	if slug, ok := request.Params["slug"]; ok {
-		result = result.Where("slug = ?", slug).First(&article)
-	} else {
-		result = result.First(&article, request.Params["id"])
-	}
-	if response.HandleDatabaseError(result) {
-		if err := db.Delete(&article).Error; err != nil {
-			response.Error(err)
-		}
+	err = ctrl.ArticleService.Delete(request.Context(), uint(id))
+	if response.WriteDBError(err) {
+		return
 	}
 }

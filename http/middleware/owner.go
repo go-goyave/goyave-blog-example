@@ -1,35 +1,54 @@
 package middleware
 
 import (
-	"errors"
+	"context"
 	"net/http"
+	"strconv"
 
-	dbModel "github.com/go-goyave/goyave-blog-example/database/model"
-	"gorm.io/gorm"
-	"goyave.dev/goyave/v4"
-	"goyave.dev/goyave/v4/database"
+	"github.com/go-goyave/goyave-blog-example/dto"
+	"goyave.dev/goyave/v5"
 )
 
-// Owner checks if the authenticated user is the owner of the requested resource.
-//  - param: the name of the URL parameter to use
-//  - column: the name of the foreign key column
-//  - model: the model of the requested resource
-func Owner(param, column string, model interface{}) goyave.Middleware {
-	return func(next goyave.Handler) goyave.Handler {
-		return func(response *goyave.Response, request *goyave.Request) {
+type OwnerService interface {
+	IsOwner(ctx context.Context, resourceID, ownerID uint) (bool, error)
+}
 
-			if p, ok := request.Params[param]; ok {
-				id := request.User.(*dbModel.User).ID
-				if err := database.Conn().Model(model).Select("1").Where(column+" = ?", id).First(map[string]interface{}{}, p).Error; err != nil {
-					if errors.Is(err, gorm.ErrRecordNotFound) {
-						response.Status(http.StatusForbidden)
-					} else {
-						response.Error(err)
-					}
-					return
-				}
-			}
-			next(response, request)
+type Owner struct {
+	goyave.Component
+
+	OwnerService OwnerService
+
+	// RouteParam the name of the route param identifying the requested resource (e.g: "articleID")
+	RouteParam string
+}
+
+func NewOwner(routeParam string, ownerService OwnerService) *Owner {
+	return &Owner{
+		RouteParam:   routeParam,
+		OwnerService: ownerService,
+	}
+}
+
+func (m *Owner) Handle(next goyave.Handler) goyave.Handler {
+	return func(response *goyave.Response, request *goyave.Request) {
+		resourceID, err := strconv.ParseUint(request.RouteParams[m.RouteParam], 10, 64)
+		if err != nil {
+			response.Status(http.StatusNotFound)
+			return
 		}
+
+		user := request.User.(*dto.InternalUser)
+
+		isOwner, err := m.OwnerService.IsOwner(request.Context(), uint(resourceID), user.ID)
+		if response.WriteDBError(err) {
+			return
+		}
+
+		if !isOwner {
+			response.Status(http.StatusForbidden)
+			return
+		}
+
+		next(response, request)
 	}
 }

@@ -9,3 +9,6 @@ config.json
 
 .idea/
 .vscode/
+
+.storage/avatars/*
+!.storage/avatars/.gitkeep

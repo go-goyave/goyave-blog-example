@@ -1,37 +1,14 @@
 version: "3"
 services:
-  api:
-    build: .
-    restart: always
-    networks:
-      - goyave-backend
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mariadb
-    volumes:
-      - .:/app
-      - storageVolume:/root/storage
-  mariadb:
-    image: mariadb
+  postgres:
+    image: postgres:latest
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: goyave
-      MYSQL_USER: goyave
-      MYSQL_PASSWORD: secret
-    networks:
-      - goyave-backend
+      - POSTGRES_DB=blog
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=secret
+    ports:
+      - '127.0.0.1:5432:5432'
     restart: on-failure
-    volumes:
-      - databaseVolume:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin ping"]
-      interval: 10s
-      timeout: 10s
-      retries: 100
-volumes:
-  databaseVolume: {}
-  storageVolume: {}
 networks:
-  goyave-backend:
-    driver: bridge
+  default:
+    name: goyave-backend

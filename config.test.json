@@ -1,38 +1,54 @@
 {
     "app": {
-        "name": "goyave-blog-example",
-        "environment": "test",
-        "debug": false,
-        "defaultLanguage": "en-US",
-        "bcryptCost": 10
+        "name": "goyave.dev/template",
+        "environment": "localhost",
+        "debug": true,
+        "defaultLanguage": "en-US"
     },
     "server": {
         "host": "127.0.0.1",
-        "maintenance": false,
-        "protocol": "http",
         "domain": "",
-        "port": 8080,
-        "httpsPort": 443,
-        "timeout": 10,
-        "maxUploadSize": 10
+        "port": 0,
+        "writeTimeout": 10,
+        "readTimeout": 10,
+        "readHeaderTimeout": 10,
+        "idleTimeout": 20,
+        "websocketCloseTimeout": 10,
+        "maxUploadSize": 10.0,
+        "proxy": {
+            "protocol": "http",
+            "host": "",
+            "port": 80,
+            "base": ""
+        }
     },
     "database": {
-        "connection": "mysql",
-        "host": "${DB_HOST}",
-        "port": 3306,
-        "name": "goyave",
-        "username": "goyave",
-        "password": "secret",
-        "options": "charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true&loc=Local",
+        "connection": "none",
+        "host": "127.0.0.1",
+        "port": 0,
+        "name": "",
+        "username": "",
+        "password": "",
+        "options": "",
         "maxOpenConnections": 20,
         "maxIdleConnections": 20,
         "maxLifetime": 300,
-        "autoMigrate": true
+        "defaultReadQueryTimeout": 20000,
+        "defaultWriteQueryTimeout": 40000,
+        "config": {
+            "skipDefaultTransaction": false,
+            "dryRun": false,
+            "prepareStmt": true,
+            "disableNestedTransaction": false,
+            "allowGlobalUpdate": false,
+            "disableAutomaticPing": true,
+            "disableForeignKeyConstraintWhenMigrating": false
+        }
     },
     "auth": {
         "jwt": {
-            "expiry": 3600,
-            "secret": "1C4C304DACBEC13CC975A3708CFAF6AED0A478573C1C0D7EBFF0E7E8530C06B7"
+            "secret": "jwt-secret",
+            "expiry": 3000
         }
     }
 }
