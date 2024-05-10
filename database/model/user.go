@@ -9,7 +9,7 @@ import (
 type User struct {
 	Email     string
 	Username  string
-	Avatar    string
+	Avatar    null.String
 	Password  string
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt null.Time  `json:"updatedAt"`

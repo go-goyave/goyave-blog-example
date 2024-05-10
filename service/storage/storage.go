@@ -15,13 +15,19 @@ type FS interface {
 }
 
 type Service struct {
-	FS FS
+	FS            FS
+	EmbedImagesFS fs.StatFS
 }
 
-func NewService(fs FS) *Service {
+func NewService(fs FS, imgFS fs.StatFS) *Service {
 	return &Service{
-		FS: fs,
+		FS:            fs,
+		EmbedImagesFS: imgFS,
 	}
+}
+
+func (s *Service) GetEmbedImagesFS() fs.StatFS {
+	return s.EmbedImagesFS
 }
 
 func (s *Service) GetFS() fs.StatFS {

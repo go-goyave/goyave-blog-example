@@ -36,6 +36,11 @@ func main() {
 		fmt.Fprintln(os.Stderr, err.(*errors.Error).String())
 		os.Exit(1)
 	}
+	imgFS, err := resources.Sub("resources/img")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.(*errors.Error).String())
+		os.Exit(1)
+	}
 
 	opts := goyave.Options{
 		LangFS: langFS,
@@ -58,7 +63,7 @@ func main() {
 		s.Logger.Info("Server is shutting down")
 	})
 
-	registerServices(server)
+	registerServices(server, imgFS)
 
 	server.Logger.Info("Registering routes")
 	server.RegisterRoutes(route.Register)
@@ -74,7 +79,7 @@ func main() {
 	}
 }
 
-func registerServices(server *goyave.Server) {
+func registerServices(server *goyave.Server, imgFS fsutil.Embed) {
 	server.Logger.Info("Registering services")
 
 	session := session.GORM(server.DB(), nil)
@@ -86,7 +91,7 @@ func registerServices(server *goyave.Server) {
 	if err != nil {
 		panic(errors.New(err))
 	}
-	storageService := storage.NewService(storageFS)
+	storageService := storage.NewService(storageFS, imgFS)
 
 	server.RegisterService(storageService)
 	server.RegisterService(user.NewService(session, server.Logger, userRepo, storageService))

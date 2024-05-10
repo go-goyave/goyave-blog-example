@@ -23,6 +23,7 @@ type Service interface {
 
 type StorageService interface {
 	GetFS() fs.StatFS
+	GetEmbedImagesFS() fs.StatFS
 }
 
 type Controller struct {
@@ -68,7 +69,12 @@ func (ctrl *Controller) ShowAvatar(response *goyave.Response, request *goyave.Re
 		return
 	}
 
-	response.File(ctrl.StorageService.GetFS(), user.Avatar)
+	if !user.Avatar.Valid {
+		response.File(ctrl.StorageService.GetEmbedImagesFS(), "default_profile_picture.png")
+		return
+	}
+
+	response.File(ctrl.StorageService.GetFS(), user.Avatar.String)
 }
 
 func (ctrl *Controller) Register(response *goyave.Response, request *goyave.Request) {

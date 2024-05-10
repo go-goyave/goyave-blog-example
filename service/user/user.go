@@ -82,12 +82,12 @@ func (s *Service) Register(ctx context.Context, registerDTO *dto.RegisterUser) e
 			if err != nil {
 				return errors.New(err)
 			}
-			user.Avatar = filename
+			user.Avatar.SetValid(filename)
 		}
 
 		_, err = s.Repository.Create(ctx, user)
-		if err != nil {
-			if err := s.StorageService.Delete(user.Avatar); err != nil {
+		if err != nil && user.Avatar.Valid {
+			if err := s.StorageService.Delete(user.Avatar.String); err != nil {
 				s.Logger.Error(errors.New(err))
 			}
 		}
