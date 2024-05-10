@@ -8,6 +8,7 @@ import (
 	"github.com/go-goyave/goyave-blog-example/database/model"
 	"github.com/go-goyave/goyave-blog-example/dto"
 	"github.com/go-goyave/goyave-blog-example/service"
+	"github.com/guregu/null/v5"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"goyave.dev/goyave/v5/slog"
@@ -77,8 +78,8 @@ func (s *Service) Register(ctx context.Context, registerDTO *dto.RegisterUser) e
 		}
 		user.Password = string(b)
 
-		if registerDTO.Avatar.IsPresent() {
-			filename, err := s.StorageService.SaveAvatar(registerDTO.Avatar.Val[0])
+		if registerDTO.Avatar.IsPresent() && registerDTO.Avatar.Val.Valid {
+			filename, err := s.StorageService.SaveAvatar(registerDTO.Avatar.Val.V[0])
 			if err != nil {
 				return errors.New(err)
 			}
@@ -105,6 +106,25 @@ func (s *Service) Update(ctx context.Context, id uint, updateDTO *dto.UpdateUser
 		}
 
 		user = typeutil.Copy(user, updateDTO)
+		if updateDTO.Avatar.Present {
+			// Delete previous avatar
+			if user.Avatar.Valid {
+				err := s.StorageService.Delete(user.Avatar.String)
+				if err != nil {
+					return errors.New(err)
+				}
+			}
+			if updateDTO.Avatar.Val.Valid {
+				// Save new avatar
+				filename, err := s.StorageService.SaveAvatar(updateDTO.Avatar.Val.V[0])
+				if err != nil {
+					return errors.New(err)
+				}
+				user.Avatar.SetValid(filename)
+			} else {
+				user.Avatar = null.String{}
+			}
+		}
 
 		_, err = s.Repository.Update(ctx, user)
 		return errors.New(err)

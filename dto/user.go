@@ -25,15 +25,15 @@ type InternalUser struct {
 }
 
 type RegisterUser struct {
-	Email    string                            `json:"email"`
-	Username string                            `json:"username"`
-	Password string                            `json:"password" copier:"-"`
-	Avatar   typeutil.Undefined[[]fsutil.File] `json:"avatar" copier:"-"`
+	Email    string                                        `json:"email"`
+	Username string                                        `json:"username"`
+	Password string                                        `json:"password" copier:"-"`
+	Avatar   typeutil.Undefined[null.Value[[]fsutil.File]] `json:"avatar" copier:"-"`
 }
 
 type UpdateUser struct {
-	Email    typeutil.Undefined[string]        `json:"email"`
-	Username typeutil.Undefined[string]        `json:"username"`
-	Password typeutil.Undefined[string]        `json:"password" copier:"-"`
-	Avatar   typeutil.Undefined[[]fsutil.File] `json:"avatar" copier:"-"`
+	Email    typeutil.Undefined[string]                    `json:"email"`
+	Username typeutil.Undefined[string]                    `json:"username"`
+	Password typeutil.Undefined[string]                    `json:"password" copier:"-"`
+	Avatar   typeutil.Undefined[null.Value[[]fsutil.File]] `json:"avatar" copier:"-"`
 }
