@@ -1,5 +1,7 @@
 github.com/Code-Hex/uniseg v0.2.0 h1:QB/2UJFvEuRLSZqe+Sb1XQBTWjqGVbZoC6oSWzQRKws=
 github.com/Code-Hex/uniseg v0.2.0/go.mod h1:/ndS2tP+X1lk2HUOcXWGtVTxVq0lWilwgMa4CbzdRsg=
+github.com/DATA-DOG/go-sqlmock v1.5.2 h1:OcvFkGmslmlZibjAjaHm3L//6LiuBgolP7OputlJIzU=
+github.com/DATA-DOG/go-sqlmock v1.5.2/go.mod h1:88MAG/4G7SMwSE3CeA0ZKzrT5CiOU3OJ+JlNzwDqpNU=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -27,6 +29,7 @@ github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD
 github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
 github.com/jinzhu/now v1.1.5 h1:/o9tlHleP7gOFmsnYNz3RGnqzefHA47wQpKrrdTIwXQ=
 github.com/jinzhu/now v1.1.5/go.mod h1:d3SSVoowX0Lcu0IBviAWJpolVfI5UJVZZ7cO71lE/z8=
+github.com/kisielk/sqlstruct v0.0.0-20201105191214-5f3e10d3ab46/go.mod h1:yyMNCyc/Ib3bDTKd379tNMpB/7/H5TjM2Y9QJ5THLbE=
 github.com/kr/pretty v0.3.0 h1:WgNl7dwNpEZ6jJ9k1snq4pZsg7DOEN8hP9Xw0Tsjwk0=
 github.com/kr/pretty v0.3.0/go.mod h1:640gp4NfQd8pI5XOwp5fnNeVWj67G7CFk/SaSQn7NBk=
 github.com/kr/text v0.2.0 h1:5Nx0Ya0ZqY2ygV366QzturHI13Jq95ApcVaJBhpS+AY=
@@ -68,5 +71,5 @@ goyave.dev/copier v0.4.3 h1:MxX2wBnhQUbv0mHPXEgw/zS4TZMtTVpzj/aYS3h4amk=
 goyave.dev/copier v0.4.3/go.mod h1:WJu0Ex81v29f5U0eMWzSNsMTGmuGY6lQ/q5yGlyLDsU=
 goyave.dev/filter v0.6.1-0.20240510154020-982e23d0cc78 h1:MFv0XiihEpvSLzK3C70amCTVtp+j1Vz8fkC2q2KmQ0c=
 goyave.dev/filter v0.6.1-0.20240510154020-982e23d0cc78/go.mod h1:zeSUREjru306U6K1Op7xdtQOXWPXDlCCA1vAoGgVzsg=
-goyave.dev/goyave/v5 v5.0.0-rc11 h1:D3EhhsBm3fRSlIXgJgnUOyBGtc/H04/8N8a0hBOyvRk=
-goyave.dev/goyave/v5 v5.0.0-rc11/go.mod h1:9FZ+9lQa5gzQDWLV9jGT2ZO35vDgYU8pK3Jov5E2zQc=
+goyave.dev/goyave/v5 v5.0.0-rc9.0.20240513133605-118aa7b9b81f h1:4FDSIT2asJrCjlED83FxIA/MQ2hsM86QqOWeo4COlOU=
+goyave.dev/goyave/v5 v5.0.0-rc9.0.20240513133605-118aa7b9b81f/go.mod h1:9FZ+9lQa5gzQDWLV9jGT2ZO35vDgYU8pK3Jov5E2zQc=

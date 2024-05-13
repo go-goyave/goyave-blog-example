@@ -70,7 +70,7 @@ func (ctrl *Controller) ShowAvatar(response *goyave.Response, request *goyave.Re
 	}
 
 	if !user.Avatar.Valid {
-		response.File(ctrl.StorageService.GetEmbedImagesFS(), "default_profile_picture.png")
+		response.File(ctrl.StorageService.GetEmbedImagesFS(), "default_profile_picture.jpg")
 		return
 	}
 

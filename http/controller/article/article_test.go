@@ -3,6 +3,7 @@ package article
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -17,6 +18,7 @@ import (
 	"goyave.dev/goyave/v5/auth"
 	"goyave.dev/goyave/v5/database"
 	"goyave.dev/goyave/v5/middleware/parse"
+	"goyave.dev/goyave/v5/slog"
 	"goyave.dev/goyave/v5/util/testutil"
 	"goyave.dev/goyave/v5/util/typeutil"
 )
@@ -26,7 +28,7 @@ type updateArticleDTO struct {
 	Contents string `json:"contents"`
 }
 
-type ServiceMock struct {
+type serviceMock struct {
 	paginator *database.PaginatorDTO[*dto.Article]
 	article   *dto.Article
 	err       error
@@ -37,36 +39,36 @@ type ServiceMock struct {
 	isOwner bool
 }
 
-func (s *ServiceMock) Index(_ context.Context, _ *filter.Request) (*database.PaginatorDTO[*dto.Article], error) {
+func (s *serviceMock) Index(_ context.Context, _ *filter.Request) (*database.PaginatorDTO[*dto.Article], error) {
 	return s.paginator, s.err
 }
 
-func (s *ServiceMock) GetBySlug(_ context.Context, slug string) (*dto.Article, error) {
+func (s *serviceMock) GetBySlug(_ context.Context, slug string) (*dto.Article, error) {
 	if s.article.Slug == slug {
 		return s.article, s.err
 	}
 	return nil, gorm.ErrRecordNotFound
 }
 
-func (s *ServiceMock) Create(_ context.Context, createDTO *dto.CreateArticle) error {
+func (s *serviceMock) Create(_ context.Context, createDTO *dto.CreateArticle) error {
 	s.createCallback(createDTO)
 	return s.err
 }
 
-func (s *ServiceMock) Update(_ context.Context, _ uint, updateDTO *dto.UpdateArticle) error {
+func (s *serviceMock) Update(_ context.Context, _ uint, updateDTO *dto.UpdateArticle) error {
 	s.updateCallback(updateDTO)
 	return s.err
 }
 
-func (s *ServiceMock) Delete(_ context.Context, _ uint) error {
+func (s *serviceMock) Delete(_ context.Context, _ uint) error {
 	return s.err
 }
 
-func (s *ServiceMock) IsOwner(_ context.Context, _ uint, _ uint) (bool, error) {
+func (s *serviceMock) IsOwner(_ context.Context, _ uint, _ uint) (bool, error) {
 	return s.isOwner, nil
 }
 
-func (s *ServiceMock) Name() string {
+func (s *serviceMock) Name() string {
 	return service.Article
 }
 
@@ -99,9 +101,9 @@ func generatePaginator() *database.PaginatorDTO[*dto.Article] {
 	}
 }
 
-func setupArticleTest(t *testing.T, service *ServiceMock) *testutil.TestServer {
+func setupArticleTest(t *testing.T, service *serviceMock) *testutil.TestServer {
 	server := testutil.NewTestServer(t, "config.test.json")
-	// server.Logger = slog.New(slog.NewHandler(true, io.Discard))
+	server.Logger = slog.New(slog.NewHandler(true, io.Discard))
 	server.RegisterService(service)
 	server.RegisterRoutes(func(_ *goyave.Server, r *goyave.Router) {
 		r.GlobalMiddleware(&parse.Middleware{})
@@ -112,7 +114,7 @@ func setupArticleTest(t *testing.T, service *ServiceMock) *testutil.TestServer {
 
 func TestArticle(t *testing.T) {
 	t.Run("Index", func(t *testing.T) {
-		service := &ServiceMock{
+		service := &serviceMock{
 			paginator: generatePaginator(),
 		}
 		server := setupArticleTest(t, service)
@@ -135,7 +137,7 @@ func TestArticle(t *testing.T) {
 	})
 
 	t.Run("Show", func(t *testing.T) {
-		service := &ServiceMock{
+		service := &serviceMock{
 			article: typeutil.MustConvert[*dto.Article](seed.ArticleGenerator()),
 		}
 		server := setupArticleTest(t, service)
@@ -157,7 +159,7 @@ func TestArticle(t *testing.T) {
 	})
 
 	t.Run("Create", func(t *testing.T) {
-		service := &ServiceMock{}
+		service := &serviceMock{}
 		server := setupArticleTest(t, service)
 		user := &dto.InternalUser{
 			User: dto.User{ID: 1},
@@ -173,7 +175,7 @@ func TestArticle(t *testing.T) {
 		request.Header.Set("Content-Type", "application/json")
 
 		service.createCallback = func(createDTO *dto.CreateArticle) {
-			expected := typeutil.Copy(&dto.CreateArticle{AuthorID: user.ID}, createDTO)
+			expected := typeutil.Copy(&dto.CreateArticle{AuthorID: user.ID}, requestBody)
 			assert.Equal(t, expected, createDTO)
 		}
 
@@ -201,7 +203,7 @@ func TestArticle(t *testing.T) {
 	})
 
 	t.Run("Update", func(t *testing.T) {
-		service := &ServiceMock{}
+		service := &serviceMock{}
 		server := setupArticleTest(t, service)
 		user := &dto.InternalUser{
 			User: dto.User{ID: 1},
@@ -273,7 +275,7 @@ func TestArticle(t *testing.T) {
 	})
 
 	t.Run("Delete", func(t *testing.T) {
-		service := &ServiceMock{}
+		service := &serviceMock{}
 		server := setupArticleTest(t, service)
 		user := &dto.InternalUser{
 			User: dto.User{ID: 1},

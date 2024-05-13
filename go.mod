@@ -3,6 +3,7 @@ module github.com/go-goyave/goyave-blog-example
 go 1.22
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/go-faker/faker/v4 v4.4.1
 	github.com/google/uuid v1.6.0
 	github.com/gosimple/slug v1.14.0
@@ -10,9 +11,10 @@ require (
 	github.com/samber/lo v1.39.0
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/crypto v0.23.0
+	gorm.io/driver/postgres v1.5.7
 	gorm.io/gorm v1.25.10
 	goyave.dev/filter v0.6.1-0.20240510154020-982e23d0cc78
-	goyave.dev/goyave/v5 v5.0.0-rc11
+	goyave.dev/goyave/v5 v5.0.0-rc9.0.20240513133605-118aa7b9b81f
 )
 
 require (
@@ -31,6 +33,5 @@ require (
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/driver/postgres v1.5.7 // indirect
 	goyave.dev/copier v0.4.3 // indirect
 )
