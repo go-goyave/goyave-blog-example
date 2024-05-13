@@ -63,8 +63,7 @@ func (ctrl *Controller) Index(response *goyave.Response, request *goyave.Request
 
 func (ctrl *Controller) Show(response *goyave.Response, request *goyave.Request) {
 	user, err := ctrl.ArticleService.GetBySlug(request.Context(), request.RouteParams["slug"])
-	if err != nil {
-		response.Error(err)
+	if response.WriteDBError(err) {
 		return
 	}
 	response.JSON(http.StatusOK, user)
@@ -92,9 +91,7 @@ func (ctrl *Controller) Update(response *goyave.Response, request *goyave.Reques
 	updateDTO := typeutil.MustConvert[*dto.UpdateArticle](request.Data)
 
 	err = ctrl.ArticleService.Update(request.Context(), uint(id), updateDTO)
-	if response.WriteDBError(err) {
-		return
-	}
+	response.WriteDBError(err)
 }
 
 func (ctrl *Controller) Delete(response *goyave.Response, request *goyave.Request) {
@@ -105,7 +102,5 @@ func (ctrl *Controller) Delete(response *goyave.Response, request *goyave.Reques
 	}
 
 	err = ctrl.ArticleService.Delete(request.Context(), uint(id))
-	if response.WriteDBError(err) {
-		return
-	}
+	response.WriteDBError(err)
 }
