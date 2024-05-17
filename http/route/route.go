@@ -14,12 +14,14 @@ import (
 
 func Register(server *goyave.Server, router *goyave.Router) {
 	router.CORS(cors.Default())
-	router.GlobalMiddleware(log.CombinedLogMiddleware(), &parse.Middleware{})
+	router.GlobalMiddleware(log.CombinedLogMiddleware())
 
 	userService := server.Service(service.User).(*userservice.Service)
 	authenticator := auth.NewJWTAuthenticator(userService)
 	authMiddleware := auth.Middleware(authenticator)
 	router.GlobalMiddleware(authMiddleware)
+
+	router.GlobalMiddleware(&parse.Middleware{})
 
 	loginController := auth.NewJWTController(userService, "Password")
 	loginController.UsernameRequestField = "email"
