@@ -11,10 +11,10 @@ require (
 	github.com/samber/lo v1.39.0
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/crypto v0.24.0
-	gorm.io/driver/postgres v1.5.7
+	gorm.io/driver/postgres v1.5.9
 	gorm.io/gorm v1.25.10
 	goyave.dev/filter v0.7.0
-	goyave.dev/goyave/v5 v5.0.0
+	goyave.dev/goyave/v5 v5.0.1
 )
 
 require (
