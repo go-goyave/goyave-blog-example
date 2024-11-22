@@ -25,7 +25,6 @@ func (s ownerServiceMock) IsOwner(_ context.Context, _, _ uint) (bool, error) {
 }
 
 func TestOwner(t *testing.T) {
-
 	cases := []struct {
 		service    ownerServiceMock
 		articleID  string

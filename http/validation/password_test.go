@@ -9,7 +9,6 @@ import (
 )
 
 func TestPasswordValidator(t *testing.T) {
-
 	cases := []struct {
 		value any
 		want  bool

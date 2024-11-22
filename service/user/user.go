@@ -28,8 +28,8 @@ type Repository interface {
 
 type StorageService interface {
 	GetFS() fs.StatFS
-	SaveAvatar(fsutil.File) (string, error)
-	Delete(string) error
+	SaveAvatar(file fsutil.File) (string, error)
+	Delete(path string) error
 }
 
 type Service struct {
