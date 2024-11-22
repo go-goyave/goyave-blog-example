@@ -22,7 +22,6 @@ import (
 	"goyave.dev/goyave/v5"
 	"goyave.dev/goyave/v5/auth"
 	"goyave.dev/goyave/v5/middleware/parse"
-	"goyave.dev/goyave/v5/slog"
 	"goyave.dev/goyave/v5/util/fsutil/osfs"
 	"goyave.dev/goyave/v5/util/testutil"
 	"goyave.dev/goyave/v5/util/typeutil"
@@ -87,7 +86,6 @@ func (m *mockAuthMiddleware) Handle(next goyave.Handler) goyave.Handler {
 
 func setupUserTest(t *testing.T, service *serviceMock) *testutil.TestServer {
 	server := testutil.NewTestServer(t, "config.test.json")
-	server.Logger = slog.New(slog.NewHandler(true, io.Discard))
 	server.RegisterService(service)
 
 	rootDir := testutil.FindRootDirectory()

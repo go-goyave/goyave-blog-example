@@ -3,7 +3,6 @@ package article
 import (
 	"context"
 	"fmt"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -18,7 +17,6 @@ import (
 	"goyave.dev/goyave/v5/auth"
 	"goyave.dev/goyave/v5/database"
 	"goyave.dev/goyave/v5/middleware/parse"
-	"goyave.dev/goyave/v5/slog"
 	"goyave.dev/goyave/v5/util/testutil"
 	"goyave.dev/goyave/v5/util/typeutil"
 )
@@ -103,7 +101,6 @@ func generatePaginator() *database.PaginatorDTO[*dto.Article] {
 
 func setupArticleTest(t *testing.T, service *serviceMock) *testutil.TestServer {
 	server := testutil.NewTestServer(t, "config.test.json")
-	server.Logger = slog.New(slog.NewHandler(true, io.Discard))
 	server.RegisterService(service)
 	server.RegisterRoutes(func(_ *goyave.Server, r *goyave.Router) {
 		r.GlobalMiddleware(&parse.Middleware{})

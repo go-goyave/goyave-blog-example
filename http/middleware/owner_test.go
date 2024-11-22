@@ -3,12 +3,10 @@ package middleware
 import (
 	"context"
 	"fmt"
-	"io"
 	"net/http"
 	"testing"
 
 	"goyave.dev/goyave/v5"
-	"goyave.dev/goyave/v5/slog"
 	"goyave.dev/goyave/v5/util/testutil"
 
 	"github.com/go-goyave/goyave-blog-example/dto"
@@ -41,7 +39,6 @@ func TestOwner(t *testing.T) {
 		t.Run(c.desc, func(t *testing.T) {
 			middleware := NewOwner("articleID", c.service)
 			server := testutil.NewTestServer(t, "config.test.json")
-			server.Logger = slog.New(slog.NewHandler(false, io.Discard))
 			request := server.NewTestRequest(http.MethodGet, "/article/"+c.articleID, nil)
 			request.RouteParams = map[string]string{"articleID": c.articleID}
 			request.User = &dto.InternalUser{User: dto.User{ID: 1}}
