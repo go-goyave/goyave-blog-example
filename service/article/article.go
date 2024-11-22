@@ -83,7 +83,6 @@ func (s *Service) GenerateSlug(title string) (string, error) {
 
 func (s *Service) Update(ctx context.Context, id uint, updateDTO *dto.UpdateArticle) error {
 	err := s.Session.Transaction(ctx, func(ctx context.Context) error {
-		var err error
 		user, err := s.Repository.GetByID(ctx, id)
 		if err != nil {
 			return errors.New(err)
