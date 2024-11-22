@@ -141,11 +141,11 @@ func TestArticle(t *testing.T) {
 		request := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/articles/%s", service.article.Slug), nil)
 		response := server.TestRequest(request)
 		assert.Equal(t, http.StatusOK, response.StatusCode)
-		paginator, err := testutil.ReadJSONBody[*dto.Article](response.Body)
+		article, err := testutil.ReadJSONBody[*dto.Article](response.Body)
 		assert.NoError(t, err)
 		assert.NoError(t, response.Body.Close())
 
-		assert.Equal(t, service.article, paginator)
+		assert.Equal(t, service.article, article)
 
 		t.Run("not_found", func(t *testing.T) {
 			request := httptest.NewRequest(http.MethodGet, "/articles/incorrect-slug", nil)
