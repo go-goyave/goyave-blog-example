@@ -14,7 +14,7 @@ require (
 	gorm.io/driver/postgres v1.5.10
 	gorm.io/gorm v1.25.12
 	goyave.dev/filter v0.7.0
-	goyave.dev/goyave/v5 v5.4.2
+	goyave.dev/goyave/v5 v5.5.0
 )
 
 require (
