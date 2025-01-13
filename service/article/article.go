@@ -53,11 +53,11 @@ func (s *Service) Index(ctx context.Context, request *filter.Request) (*database
 }
 
 func (s *Service) GetBySlug(ctx context.Context, slug string) (*dto.Article, error) {
-	user, err := s.Repository.GetBySlug(ctx, slug)
+	article, err := s.Repository.GetBySlug(ctx, slug)
 	if err != nil {
 		return nil, errors.New(err)
 	}
-	return typeutil.MustConvert[*dto.Article](user), nil
+	return typeutil.MustConvert[*dto.Article](article), nil
 }
 
 func (s *Service) Create(ctx context.Context, createDTO *dto.CreateArticle) error {
@@ -83,14 +83,14 @@ func (s *Service) GenerateSlug(title string) (string, error) {
 
 func (s *Service) Update(ctx context.Context, id uint, updateDTO *dto.UpdateArticle) error {
 	err := s.Session.Transaction(ctx, func(ctx context.Context) error {
-		user, err := s.Repository.GetByID(ctx, id)
+		article, err := s.Repository.GetByID(ctx, id)
 		if err != nil {
 			return errors.New(err)
 		}
 
-		user = typeutil.Copy(user, updateDTO)
+		article = typeutil.Copy(article, updateDTO)
 
-		_, err = s.Repository.Update(ctx, user)
+		_, err = s.Repository.Update(ctx, article)
 		return errors.New(err)
 	})
 
