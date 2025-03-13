@@ -69,5 +69,5 @@ goyave.dev/copier v0.4.4 h1:yK+2h1udZVDJXzwNLMv7PCxfb7XM94awBniL2LqShAw=
 goyave.dev/copier v0.4.4/go.mod h1:zjuGXlfkYsx9cTpQ9uL0304/ouASGCrrfJ5hpZmtxpM=
 goyave.dev/filter v0.7.0 h1:bjAhFVFBa1P2mrjTxGXqmDSuoK/5nXUL95nzEWj+A/g=
 goyave.dev/filter v0.7.0/go.mod h1:NQmCRll1gY3/FYCo4WVVUjfweg/7YdK0n5K1Cdd1hvU=
-goyave.dev/goyave/v5 v5.5.5 h1:LVxvjyWw0mYVt3wboH64rjO/5+RthnmYuDeU0pL1648=
-goyave.dev/goyave/v5 v5.5.5/go.mod h1:NNvynF0NDw34imD6NplF3nVRVVllq3bsTeEA1GvLQQQ=
+goyave.dev/goyave/v5 v5.5.6 h1:f2OjybKkZW2AjFqpNe1SWvDGVkL7CbBNOxjCAKULwk0=
+goyave.dev/goyave/v5 v5.5.6/go.mod h1:NNvynF0NDw34imD6NplF3nVRVVllq3bsTeEA1GvLQQQ=

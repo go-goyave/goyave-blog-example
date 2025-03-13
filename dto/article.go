@@ -10,13 +10,13 @@ import (
 type Article struct {
 	Author *User `json:"author,omitempty"`
 
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt null.Time `json:"updatedAt"`
-	Title     string    `json:"title"`
-	Contents  string    `json:"contents"`
-	Slug      string    `json:"slug"`
-	AuthorID  uint      `json:"authorID"`
-	ID        uint      `json:"id"`
+	CreatedAt time.Time `json:"createdAt,omitzero"`
+	UpdatedAt null.Time `json:"updatedAt,omitzero"`
+	Title     string    `json:"title,omitempty"`
+	Contents  string    `json:"contents,omitempty"`
+	Slug      string    `json:"slug,omitempty"`
+	AuthorID  uint      `json:"authorID,omitempty"`
+	ID        uint      `json:"id,omitempty"`
 }
 
 type CreateArticle struct {
