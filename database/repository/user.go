@@ -20,7 +20,7 @@ func NewUser(db *gorm.DB) *User {
 	}
 }
 
-func (r *User) GetByID(ctx context.Context, id uint) (*model.User, error) {
+func (r *User) GetByID(ctx context.Context, id int64) (*model.User, error) {
 	var user *model.User
 	db := session.DB(ctx, r.DB).Where("id", id).First(&user)
 	return user, errors.New(db.Error)

@@ -42,7 +42,7 @@ func (s *serviceMock) Index(_ context.Context, _ *filter.Request) (*database.Pag
 }
 
 func (s *serviceMock) GetBySlug(_ context.Context, slug string) (*dto.Article, error) {
-	if s.article.Slug == slug {
+	if s.article.Slug.Val == slug {
 		return s.article, s.err
 	}
 	return nil, gorm.ErrRecordNotFound
@@ -53,16 +53,16 @@ func (s *serviceMock) Create(_ context.Context, createDTO *dto.CreateArticle) er
 	return s.err
 }
 
-func (s *serviceMock) Update(_ context.Context, _ uint, updateDTO *dto.UpdateArticle) error {
+func (s *serviceMock) Update(_ context.Context, _ int64, updateDTO *dto.UpdateArticle) error {
 	s.updateCallback(updateDTO)
 	return s.err
 }
 
-func (s *serviceMock) Delete(_ context.Context, _ uint) error {
+func (s *serviceMock) Delete(_ context.Context, _ int64) error {
 	return s.err
 }
 
-func (s *serviceMock) IsOwner(_ context.Context, _ uint, _ uint) (bool, error) {
+func (s *serviceMock) IsOwner(_ context.Context, _ int64, _ int64) (bool, error) {
 	return s.isOwner, nil
 }
 
@@ -138,7 +138,7 @@ func TestArticle(t *testing.T) {
 			article: typeutil.MustConvert[*dto.Article](seed.ArticleGenerator()),
 		}
 		server := setupArticleTest(t, service)
-		request := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/articles/%s", service.article.Slug), nil)
+		request := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/articles/%s", service.article.Slug.Val), nil)
 		response := server.TestRequest(request)
 		assert.Equal(t, http.StatusOK, response.StatusCode)
 		article, err := testutil.ReadJSONBody[*dto.Article](response.Body)
@@ -159,7 +159,7 @@ func TestArticle(t *testing.T) {
 		service := &serviceMock{}
 		server := setupArticleTest(t, service)
 		user := &dto.InternalUser{
-			User: dto.User{ID: 1},
+			User: dto.User{ID: typeutil.NewUndefined[int64](1)},
 		}
 		server.Router().GlobalMiddleware(&mockAuthMiddleware{}).SetMeta(mockAuthUserMeta, user)
 
@@ -172,7 +172,7 @@ func TestArticle(t *testing.T) {
 		request.Header.Set("Content-Type", "application/json")
 
 		service.createCallback = func(createDTO *dto.CreateArticle) {
-			expected := typeutil.Copy(&dto.CreateArticle{AuthorID: user.ID}, requestBody)
+			expected := typeutil.Copy(&dto.CreateArticle{AuthorID: user.ID.Val}, requestBody)
 			assert.Equal(t, expected, createDTO)
 		}
 
@@ -203,7 +203,7 @@ func TestArticle(t *testing.T) {
 		service := &serviceMock{}
 		server := setupArticleTest(t, service)
 		user := &dto.InternalUser{
-			User: dto.User{ID: 1},
+			User: dto.User{ID: typeutil.NewUndefined[int64](1)},
 		}
 		server.Router().GlobalMiddleware(&mockAuthMiddleware{}).SetMeta(mockAuthUserMeta, user)
 
@@ -275,7 +275,7 @@ func TestArticle(t *testing.T) {
 		service := &serviceMock{}
 		server := setupArticleTest(t, service)
 		user := &dto.InternalUser{
-			User: dto.User{ID: 1},
+			User: dto.User{ID: typeutil.NewUndefined[int64](1)},
 		}
 		server.Router().GlobalMiddleware(&mockAuthMiddleware{}).SetMeta(mockAuthUserMeta, user)
 		service.isOwner = true

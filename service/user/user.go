@@ -21,7 +21,7 @@ import (
 type Repository interface {
 	Create(ctx context.Context, user *model.User) (*model.User, error)
 	Update(ctx context.Context, user *model.User) (*model.User, error)
-	GetByID(ctx context.Context, id uint) (*model.User, error)
+	GetByID(ctx context.Context, id int64) (*model.User, error)
 	GetByEmail(ctx context.Context, email string) (*model.User, error)
 	UniqueScope() func(db *gorm.DB, val any) *gorm.DB
 }
@@ -52,7 +52,7 @@ func (s *Service) UniqueScope() func(db *gorm.DB, val any) *gorm.DB {
 	return s.Repository.UniqueScope()
 }
 
-func (s *Service) GetByID(ctx context.Context, id uint) (*dto.InternalUser, error) {
+func (s *Service) GetByID(ctx context.Context, id int64) (*dto.InternalUser, error) {
 	user, err := s.Repository.GetByID(ctx, id)
 	if err != nil {
 		return nil, errors.New(err)
@@ -97,7 +97,7 @@ func (s *Service) Register(ctx context.Context, registerDTO *dto.RegisterUser) e
 	return errors.New(err)
 }
 
-func (s *Service) Update(ctx context.Context, id uint, updateDTO *dto.UpdateUser) error {
+func (s *Service) Update(ctx context.Context, id int64, updateDTO *dto.UpdateUser) error {
 	err := s.Session.Transaction(ctx, func(ctx context.Context) error {
 		var err error
 		user, err := s.Repository.GetByID(ctx, id)

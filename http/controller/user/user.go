@@ -16,9 +16,9 @@ import (
 
 type Service interface {
 	UniqueScope() func(db *gorm.DB, val any) *gorm.DB
-	GetByID(ctx context.Context, id uint) (*dto.InternalUser, error)
+	GetByID(ctx context.Context, id int64) (*dto.InternalUser, error)
 	Register(ctx context.Context, registerDTO *dto.RegisterUser) error
-	Update(ctx context.Context, id uint, updateDTO *dto.UpdateUser) error
+	Update(ctx context.Context, id int64, updateDTO *dto.UpdateUser) error
 }
 
 type StorageService interface {
@@ -58,13 +58,13 @@ func (ctrl *Controller) ShowProfile(response *goyave.Response, request *goyave.R
 }
 
 func (ctrl *Controller) ShowAvatar(response *goyave.Response, request *goyave.Request) {
-	id, err := strconv.ParseUint(request.RouteParams["userID"], 10, 64)
+	id, err := strconv.ParseInt(request.RouteParams["userID"], 10, 64)
 	if err != nil {
 		response.Status(http.StatusNotFound)
 		return
 	}
 
-	user, err := ctrl.UserService.GetByID(request.Context(), uint(id))
+	user, err := ctrl.UserService.GetByID(request.Context(), id)
 	if response.WriteDBError(err) {
 		return
 	}
@@ -90,7 +90,7 @@ func (ctrl *Controller) Register(response *goyave.Response, request *goyave.Requ
 
 func (ctrl *Controller) Update(response *goyave.Response, request *goyave.Request) {
 	updateDTO := typeutil.MustConvert[*dto.UpdateUser](request.Data)
-	id := request.User.(*dto.InternalUser).ID
+	id := request.User.(*dto.InternalUser).ID.Val
 
 	err := ctrl.UserService.Update(request.Context(), id, updateDTO)
 	if err != nil {

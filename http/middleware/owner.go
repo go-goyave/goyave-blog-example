@@ -10,7 +10,7 @@ import (
 )
 
 type OwnerService interface {
-	IsOwner(ctx context.Context, resourceID, ownerID uint) (bool, error)
+	IsOwner(ctx context.Context, resourceID, ownerID int64) (bool, error)
 }
 
 type Owner struct {
@@ -31,7 +31,7 @@ func NewOwner(routeParam string, ownerService OwnerService) *Owner {
 
 func (m *Owner) Handle(next goyave.Handler) goyave.Handler {
 	return func(response *goyave.Response, request *goyave.Request) {
-		resourceID, err := strconv.ParseUint(request.RouteParams[m.RouteParam], 10, 64)
+		resourceID, err := strconv.ParseInt(request.RouteParams[m.RouteParam], 10, 64)
 		if err != nil {
 			response.Status(http.StatusNotFound)
 			return
@@ -39,7 +39,7 @@ func (m *Owner) Handle(next goyave.Handler) goyave.Handler {
 
 		user := request.User.(*dto.InternalUser)
 
-		isOwner, err := m.OwnerService.IsOwner(request.Context(), uint(resourceID), user.ID)
+		isOwner, err := m.OwnerService.IsOwner(request.Context(), resourceID, user.ID.Val)
 		if response.WriteDBError(err) {
 			return
 		}

@@ -19,9 +19,9 @@ type Service interface {
 	Index(ctx context.Context, request *filter.Request) (*database.PaginatorDTO[*dto.Article], error)
 	GetBySlug(ctx context.Context, slug string) (*dto.Article, error)
 	Create(ctx context.Context, createDTO *dto.CreateArticle) error
-	Update(ctx context.Context, id uint, updateDTO *dto.UpdateArticle) error
-	Delete(ctx context.Context, id uint) error
-	IsOwner(ctx context.Context, resourceID, ownerID uint) (bool, error)
+	Update(ctx context.Context, id int64, updateDTO *dto.UpdateArticle) error
+	Delete(ctx context.Context, id int64) error
+	IsOwner(ctx context.Context, resourceID, ownerID int64) (bool, error)
 }
 
 type Controller struct {
@@ -71,7 +71,7 @@ func (ctrl *Controller) Show(response *goyave.Response, request *goyave.Request)
 
 func (ctrl *Controller) Create(response *goyave.Response, request *goyave.Request) {
 	createDTO := typeutil.MustConvert[*dto.CreateArticle](request.Data)
-	createDTO.AuthorID = request.User.(*dto.InternalUser).ID
+	createDTO.AuthorID = request.User.(*dto.InternalUser).ID.Val
 
 	err := ctrl.ArticleService.Create(request.Context(), createDTO)
 	if err != nil {
@@ -82,7 +82,7 @@ func (ctrl *Controller) Create(response *goyave.Response, request *goyave.Reques
 }
 
 func (ctrl *Controller) Update(response *goyave.Response, request *goyave.Request) {
-	id, err := strconv.ParseUint(request.RouteParams["articleID"], 10, 64)
+	id, err := strconv.ParseInt(request.RouteParams["articleID"], 10, 64)
 	if err != nil {
 		response.Status(http.StatusNotFound)
 		return
@@ -90,17 +90,17 @@ func (ctrl *Controller) Update(response *goyave.Response, request *goyave.Reques
 
 	updateDTO := typeutil.MustConvert[*dto.UpdateArticle](request.Data)
 
-	err = ctrl.ArticleService.Update(request.Context(), uint(id), updateDTO)
+	err = ctrl.ArticleService.Update(request.Context(), id, updateDTO)
 	response.WriteDBError(err)
 }
 
 func (ctrl *Controller) Delete(response *goyave.Response, request *goyave.Request) {
-	id, err := strconv.ParseUint(request.RouteParams["articleID"], 10, 64)
+	id, err := strconv.ParseInt(request.RouteParams["articleID"], 10, 64)
 	if err != nil {
 		response.Status(http.StatusNotFound)
 		return
 	}
 
-	err = ctrl.ArticleService.Delete(request.Context(), uint(id))
+	err = ctrl.ArticleService.Delete(request.Context(), id)
 	response.WriteDBError(err)
 }

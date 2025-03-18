@@ -10,6 +10,7 @@ import (
 	"goyave.dev/goyave/v5/database"
 	"goyave.dev/goyave/v5/util/errors"
 	"goyave.dev/goyave/v5/util/session"
+	"goyave.dev/goyave/v5/util/typeutil"
 )
 
 type Article struct {
@@ -39,7 +40,7 @@ func (r *Article) Index(ctx context.Context, request *filter.Request) (*database
 	return paginator, errors.New(err)
 }
 
-func (r *Article) GetByID(ctx context.Context, id uint) (*model.Article, error) {
+func (r *Article) GetByID(ctx context.Context, id int64) (*model.Article, error) {
 	var article *model.Article
 	db := session.DB(ctx, r.DB).Where("id", id).First(&article)
 	return article, errors.New(db.Error)
@@ -61,15 +62,15 @@ func (r *Article) Update(ctx context.Context, article *model.Article) (*model.Ar
 	return article, errors.New(db.Error)
 }
 
-func (r *Article) Delete(ctx context.Context, id uint) error {
-	db := session.DB(ctx, r.DB).Delete(&model.Article{ID: id})
+func (r *Article) Delete(ctx context.Context, id int64) error {
+	db := session.DB(ctx, r.DB).Delete(&model.Article{ID: typeutil.NewUndefined(id)})
 	if db.RowsAffected == 0 {
 		return errors.New(gorm.ErrRecordNotFound)
 	}
 	return errors.New(db.Error)
 }
 
-func (r *Article) IsOwner(ctx context.Context, resourceID, ownerID uint) (bool, error) {
+func (r *Article) IsOwner(ctx context.Context, resourceID, ownerID int64) (bool, error) {
 	var one int64
 	db := session.DB(ctx, r.DB).
 		Table(model.Article{}.TableName()).

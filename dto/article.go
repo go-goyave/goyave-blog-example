@@ -4,28 +4,28 @@ import (
 	"time"
 
 	"github.com/guregu/null/v5"
-	"goyave.dev/goyave/v5/util/typeutil"
+	t "goyave.dev/goyave/v5/util/typeutil"
 )
 
 type Article struct {
 	Author *User `json:"author,omitempty"`
 
-	CreatedAt time.Time `json:"createdAt,omitzero"`
-	UpdatedAt null.Time `json:"updatedAt,omitzero"`
-	Title     string    `json:"title,omitempty"`
-	Contents  string    `json:"contents,omitempty"`
-	Slug      string    `json:"slug,omitempty"`
-	AuthorID  uint      `json:"authorID,omitempty"`
-	ID        uint      `json:"id,omitempty"`
+	CreatedAt t.Undefined[time.Time] `json:"createdAt,omitzero"`
+	UpdatedAt t.Undefined[null.Time] `json:"updatedAt,omitzero"`
+	Title     t.Undefined[string]    `json:"title,omitzero"`
+	Contents  t.Undefined[string]    `json:"contents,omitzero"`
+	Slug      t.Undefined[string]    `json:"slug,omitzero"`
+	AuthorID  t.Undefined[int64]     `json:"authorID,omitzero"`
+	ID        t.Undefined[int64]     `json:"id,omitzero"`
 }
 
 type CreateArticle struct {
 	Title    string `json:"title"`
 	Contents string `json:"contents"`
-	AuthorID uint   `json:"authorID"`
+	AuthorID int64  `json:"authorID"`
 }
 
 type UpdateArticle struct {
-	Title    typeutil.Undefined[string] `json:"title"`
-	Contents typeutil.Undefined[string] `json:"contents"`
+	Title    t.Undefined[string] `json:"title"`
+	Contents t.Undefined[string] `json:"contents"`
 }

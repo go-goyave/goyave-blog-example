@@ -26,10 +26,10 @@ type Repository interface {
 	Index(ctx context.Context, request *filter.Request) (*database.Paginator[*model.Article], error)
 	Create(ctx context.Context, article *model.Article) (*model.Article, error)
 	Update(ctx context.Context, article *model.Article) (*model.Article, error)
-	GetByID(ctx context.Context, id uint) (*model.Article, error)
+	GetByID(ctx context.Context, id int64) (*model.Article, error)
 	GetBySlug(ctx context.Context, slug string) (*model.Article, error)
-	Delete(ctx context.Context, id uint) error
-	IsOwner(ctx context.Context, resourceID, ownerID uint) (bool, error)
+	Delete(ctx context.Context, id int64) error
+	IsOwner(ctx context.Context, resourceID, ownerID int64) (bool, error)
 }
 
 type Service struct {
@@ -62,11 +62,11 @@ func (s *Service) GetBySlug(ctx context.Context, slug string) (*dto.Article, err
 
 func (s *Service) Create(ctx context.Context, createDTO *dto.CreateArticle) error {
 	article := typeutil.Copy(&model.Article{}, createDTO)
-	var err error
-	article.Slug, err = s.GenerateSlug(article.Title)
+	slug, err := s.GenerateSlug(article.Title.Val)
 	if err != nil {
 		return errors.New(err)
 	}
+	article.Slug = typeutil.NewUndefined(slug)
 	_, err = s.Repository.Create(ctx, article)
 	return errors.New(err)
 }
@@ -81,7 +81,7 @@ func (s *Service) GenerateSlug(title string) (string, error) {
 	return slug.Make(fmt.Sprintf("%s-%s", shortUID, title)), nil
 }
 
-func (s *Service) Update(ctx context.Context, id uint, updateDTO *dto.UpdateArticle) error {
+func (s *Service) Update(ctx context.Context, id int64, updateDTO *dto.UpdateArticle) error {
 	err := s.Session.Transaction(ctx, func(ctx context.Context) error {
 		article, err := s.Repository.GetByID(ctx, id)
 		if err != nil {
@@ -97,11 +97,11 @@ func (s *Service) Update(ctx context.Context, id uint, updateDTO *dto.UpdateArti
 	return errors.New(err)
 }
 
-func (s *Service) Delete(ctx context.Context, id uint) error {
+func (s *Service) Delete(ctx context.Context, id int64) error {
 	return s.Repository.Delete(ctx, id)
 }
 
-func (s *Service) IsOwner(ctx context.Context, resourceID, ownerID uint) (bool, error) {
+func (s *Service) IsOwner(ctx context.Context, resourceID, ownerID int64) (bool, error) {
 	return s.Repository.IsOwner(ctx, resourceID, ownerID)
 }
 

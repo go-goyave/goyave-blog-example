@@ -48,7 +48,7 @@ func (s *serviceMock) UniqueScope() func(db *gorm.DB, val any) *gorm.DB {
 	}
 }
 
-func (s *serviceMock) GetByID(_ context.Context, _ uint) (*dto.InternalUser, error) {
+func (s *serviceMock) GetByID(_ context.Context, _ int64) (*dto.InternalUser, error) {
 	return s.user, s.err
 }
 
@@ -57,7 +57,7 @@ func (s *serviceMock) Register(_ context.Context, registerDTO *dto.RegisterUser)
 	return s.err
 }
 
-func (s *serviceMock) Update(_ context.Context, _ uint, updateDTO *dto.UpdateUser) error {
+func (s *serviceMock) Update(_ context.Context, _ int64, updateDTO *dto.UpdateUser) error {
 	s.updateCallback(updateDTO)
 	return s.err
 }
@@ -120,10 +120,10 @@ func TestUser(t *testing.T) {
 		server := setupUserTest(t, &serviceMock{})
 		user := &dto.InternalUser{
 			User: dto.User{
-				ID:        1,
-				CreatedAt: time.Now().Round(0).UTC(),
-				Username:  "johndoe",
-				Email:     "johndoe@example.org",
+				ID:        typeutil.NewUndefined[int64](1),
+				CreatedAt: typeutil.NewUndefined(time.Now().Round(0).UTC()),
+				Username:  typeutil.NewUndefined("johndoe"),
+				Email:     typeutil.NewUndefined("johndoe@example.org"),
 			},
 			Avatar: null.NewString("img.jpeg", true),
 		}
@@ -142,7 +142,7 @@ func TestUser(t *testing.T) {
 		service := &serviceMock{}
 		server := setupUserTest(t, service)
 		user := &dto.InternalUser{
-			User:   dto.User{ID: 1},
+			User:   dto.User{ID: typeutil.NewUndefined[int64](1)},
 			Avatar: null.NewString("test_profile_picture.jpg", true),
 		}
 		service.user = user
@@ -251,9 +251,9 @@ func TestUser(t *testing.T) {
 		server := setupUserTest(t, service)
 		user := &dto.InternalUser{
 			User: dto.User{
-				ID:       1,
-				Username: "johndoe",
-				Email:    "johndoe@example.org",
+				ID:       typeutil.NewUndefined[int64](1),
+				Username: typeutil.NewUndefined("johndoe"),
+				Email:    typeutil.NewUndefined("johndoe@example.org"),
 			},
 		}
 		server.Router().GlobalMiddleware(&mockAuthMiddleware{}).SetMeta(mockAuthUserMeta, user)

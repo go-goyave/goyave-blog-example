@@ -5,16 +5,16 @@ import (
 
 	"github.com/guregu/null/v5"
 	"goyave.dev/goyave/v5/util/fsutil"
-	"goyave.dev/goyave/v5/util/typeutil"
+	t "goyave.dev/goyave/v5/util/typeutil"
 )
 
 // User the public user DTO. Used to show profiles for example.
 type User struct {
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt null.Time `json:"updatedAt"`
-	Username  string    `json:"username"`
-	Email     string    `json:"email"`
-	ID        uint      `json:"id"`
+	CreatedAt t.Undefined[time.Time] `json:"createdAt,omitzero"`
+	UpdatedAt t.Undefined[null.Time] `json:"updatedAt,omitzero"`
+	Username  t.Undefined[string]    `json:"username,omitzero"`
+	Email     t.Undefined[string]    `json:"email,omitzero"`
+	ID        t.Undefined[int64]     `json:"id,omitzero"`
 }
 
 // InternalUser contains private user info that should not be exposed to clients.
@@ -25,15 +25,15 @@ type InternalUser struct {
 }
 
 type RegisterUser struct {
-	Email    string                                        `json:"email"`
-	Username string                                        `json:"username"`
-	Password string                                        `json:"password" copier:"-"`
-	Avatar   typeutil.Undefined[null.Value[[]fsutil.File]] `json:"avatar" copier:"-"`
+	Email    string                                 `json:"email"`
+	Username string                                 `json:"username"`
+	Password string                                 `json:"password" copier:"-"`
+	Avatar   t.Undefined[null.Value[[]fsutil.File]] `json:"avatar" copier:"-"`
 }
 
 type UpdateUser struct {
-	Email    typeutil.Undefined[string]                    `json:"email"`
-	Username typeutil.Undefined[string]                    `json:"username"`
-	Password typeutil.Undefined[string]                    `json:"password" copier:"-"`
-	Avatar   typeutil.Undefined[null.Value[[]fsutil.File]] `json:"avatar" copier:"-"`
+	Email    t.Undefined[string]                    `json:"email"`
+	Username t.Undefined[string]                    `json:"username"`
+	Password t.Undefined[string]                    `json:"password" copier:"-"`
+	Avatar   t.Undefined[null.Value[[]fsutil.File]] `json:"avatar" copier:"-"`
 }

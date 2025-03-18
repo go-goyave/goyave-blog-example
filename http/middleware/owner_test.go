@@ -8,6 +8,7 @@ import (
 
 	"goyave.dev/goyave/v5"
 	"goyave.dev/goyave/v5/util/testutil"
+	"goyave.dev/goyave/v5/util/typeutil"
 
 	"github.com/go-goyave/goyave-blog-example/dto"
 	"github.com/stretchr/testify/assert"
@@ -18,7 +19,7 @@ type ownerServiceMock struct {
 	isOwner bool
 }
 
-func (s ownerServiceMock) IsOwner(_ context.Context, _, _ uint) (bool, error) {
+func (s ownerServiceMock) IsOwner(_ context.Context, _, _ int64) (bool, error) {
 	return s.isOwner, s.err
 }
 
@@ -41,7 +42,7 @@ func TestOwner(t *testing.T) {
 			server := testutil.NewTestServer(t, "config.test.json")
 			request := server.NewTestRequest(http.MethodGet, "/article/"+c.articleID, nil)
 			request.RouteParams = map[string]string{"articleID": c.articleID}
-			request.User = &dto.InternalUser{User: dto.User{ID: 1}}
+			request.User = &dto.InternalUser{User: dto.User{ID: typeutil.NewUndefined[int64](1)}}
 			resp := server.TestMiddleware(middleware, request, func(response *goyave.Response, _ *goyave.Request) {
 				response.Status(http.StatusOK)
 			})
