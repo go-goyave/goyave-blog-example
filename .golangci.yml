@@ -32,6 +32,8 @@ linters:
             - ["DTO"] # DenyList
         - name: unused-parameter
           disabled: false
+        - name: use-any
+          disabled: false
     testifylint:
       disable:
         - require-error
