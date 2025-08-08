@@ -38,6 +38,9 @@ func (r *User) Create(ctx context.Context, user *model.User) (*model.User, error
 }
 
 func (r *User) Update(ctx context.Context, user *model.User) (*model.User, error) {
+	if user.ID.Val == 0 {
+		return nil, errors.New(gorm.ErrPrimaryKeyRequired)
+	}
 	db := session.DB(ctx, r.DB).Omit(clause.Associations).Save(&user)
 	return user, errors.New(db.Error)
 }

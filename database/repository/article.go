@@ -58,6 +58,9 @@ func (r *Article) Create(ctx context.Context, article *model.Article) (*model.Ar
 }
 
 func (r *Article) Update(ctx context.Context, article *model.Article) (*model.Article, error) {
+	if article.ID.Val == 0 {
+		return nil, errors.New(gorm.ErrPrimaryKeyRequired)
+	}
 	db := session.DB(ctx, r.DB).Omit(clause.Associations).Save(&article)
 	return article, errors.New(db.Error)
 }
