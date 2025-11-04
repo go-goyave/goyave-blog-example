@@ -14,6 +14,8 @@ linters:
     - errcheck
     - ineffassign
     - staticcheck
+    - modernize
+    - sqlclosecheck
   settings:
     gocyclo:
       min-complexity: 15
